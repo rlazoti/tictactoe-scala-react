@@ -62,7 +62,7 @@ case class NextState(currentState: BoardState, move: Move) extends BoardState {
   val positions = buildPositions()
 
   private def buildPositions() = {
-    val newPositions = currentState.positions
+    val newPositions = currentState.positions.map { values => values.map(identity) }
     newPositions(move.position.row)(move.position.col) = move.player.mark
     newPositions
   }
