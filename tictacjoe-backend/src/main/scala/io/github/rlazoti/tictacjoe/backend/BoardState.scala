@@ -62,14 +62,19 @@ case class InitialBoardState(implicit settings: GameSettings) extends BoardState
 }
 
 case class NextBoardState(currentState: BoardState, move: Move) extends BoardState {
+  currentState.lastMovePlayer.map { player =>
+    if (currentState.over(player, move.player))
+      throw new UnsupportedOperationException(s"No one can perform a new move ater the end of game.")
+  }
+
   val lastMovePlayer = currentState.lastMovePlayer match {
     case Some(currentPlayer) if (currentPlayer.equals(move.player)) =>
       throw new IllegalArgumentException(s"User '${move.player.name}' cannot perform two moves in a row.")
     case _ => Some(move.player)
   }
 
-  val settings = currentState.settings
   val blanks = currentState.blanks - 1
+  val settings = currentState.settings
   val positions = buildPositions()
 
   private def buildPositions() = {
