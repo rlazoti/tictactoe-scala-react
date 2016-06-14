@@ -1,9 +1,11 @@
 package io.github.rlazoti.tictacjoe.backend
 
 trait BoardState {
+
   def blanks: Int
-  def positions: Game.Positions
-  def lastPlayer: Option[Player]
+  def positions: Array[Array[String]]
+  def lastMovePlayer: Option[Player]
+  def settings: GameSettings
 
   def over(player: Player, opponent: Player) =
     won(player) || won(opponent) || draw(player, opponent)
@@ -19,7 +21,7 @@ trait BoardState {
 
   private def winningDiagonal(player: Player) = {
     val values =
-      for (index <- 0 to Game.width - 1)
+      for (index <- 0 to settings.boardWidth - 1)
       yield positions(index)(index)
 
     checkValues(player, values.toArray)
@@ -27,8 +29,8 @@ trait BoardState {
 
   private def winningReverseDiagonal(player: Player) = {
     val values =
-      for (index <- 0 to Game.width - 1)
-      yield positions(Game.width - 1 - index)(index)
+      for (index <- 0 to settings.boardWidth - 1)
+      yield positions(settings.boardWidth - 1 - index)(index)
 
     checkValues(player, values.toArray)
   }
@@ -43,7 +45,7 @@ trait BoardState {
       positions.map { row => row(columnIndex) }
 
     val columns =
-      for (index <- 0 to Game.width - 1)
+      for (index <- 0 to settings.boardWidth - 1)
       yield getColumn(index)
 
     columns
@@ -53,20 +55,20 @@ trait BoardState {
 
 }
 
-case class InitialState() extends BoardState {
-  val blanks = Game.width * Game.width
-  val positions = Array.fill(Game.width, Game.width)(Game.EmptyPosition)
-  val lastPlayer = None
+case class InitialBoardState(implicit settings: GameSettings) extends BoardState {
+  val blanks = settings.boardWidth * settings.boardWidth
+  val positions = Array.fill(settings.boardWidth, settings.boardWidth)(settings.emptyPositionValue)
+  val lastMovePlayer = None
 }
 
-case class NextState(currentState: BoardState, move: Move) extends BoardState {
-  val lastPlayer = currentState.lastPlayer match {
-    case currentPlayer if (currentPlayer != move.player) => move.player
-    case currentPlayer if (currentPlayer == move.player) =>
+case class NextBoardState(currentState: BoardState, move: Move) extends BoardState {
+  val lastMovePlayer = currentState.lastMovePlayer match {
+    case Some(currentPlayer) if (currentPlayer.equals(move.player)) =>
       throw new IllegalArgumentException(s"User '${move.player.name}' cannot perform two moves in a row.")
-    case _ => move.player
+    case _ => Some(move.player)
   }
 
+  val settings = currentState.settings
   val blanks = currentState.blanks - 1
   val positions = buildPositions()
 

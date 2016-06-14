@@ -6,27 +6,27 @@ case class Move(val player: Player, val position: Position)
 
 case class Board(
   val id: Int,
-  val width: Int = Game.width,
-  val opponent: Player = Computer(),
-  val user: Player = User("Rodrigo"),
-  val currentState: BoardState = InitialState()) {
+  val settings: GameSettings,
+  val player: Player,
+  val opponentPlayer: Player,
+  val currentState: BoardState) {
 
   private def isEnded() =
-    currentState.over(user, opponent)
+    currentState.over(player, opponentPlayer)
 
   private def userWon() =
-    currentState.won(user)
+    currentState.won(player)
 
   private def opponentWon() =
-    currentState.won(opponent)
+    currentState.won(opponentPlayer)
 
   private def draw() =
-    currentState.draw(user, opponent)
+    currentState.draw(player, opponentPlayer)
 
-  def addMove(move: Move) = {
+  def addMove(move: Move): Board = {
     if (isEnded()) this
     else {
-      val board = Board(id, width, opponent, user, NextState(currentState, move))
+      val board = Board(id, settings, player, opponentPlayer, NextBoardState(currentState, move))
       println(s"next move => ${move.player.name} marks ${move.position}")
       board.printCurrentState()
       board
@@ -35,8 +35,8 @@ case class Board(
 
   def printCurrentState() = {
     val message =
-      if (userWon()) s"${user.name} won!"
-      else if (opponentWon()) s"${opponent.name} won!"
+      if (userWon()) s"${player.name} won!"
+      else if (opponentWon()) s"${opponentPlayer.name} won!"
       else if (draw()) s"Game Draw!"
       else "Game is not over yet!"
 
