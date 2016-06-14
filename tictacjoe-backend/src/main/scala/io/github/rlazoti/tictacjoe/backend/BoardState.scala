@@ -3,6 +3,7 @@ package io.github.rlazoti.tictacjoe.backend
 trait BoardState {
   def blanks: Int
   def positions: Game.Positions
+  def lastPlayer: Option[Player]
 
   def over(player: Player, opponent: Player) =
     won(player) || won(opponent) || draw(player, opponent)
@@ -55,9 +56,17 @@ trait BoardState {
 case class InitialState() extends BoardState {
   val blanks = Game.width * Game.width
   val positions = Array.fill(Game.width, Game.width)(Game.EmptyPosition)
+  val lastPlayer = None
 }
 
 case class NextState(currentState: BoardState, move: Move) extends BoardState {
+  val lastPlayer = currentState.lastPlayer match {
+    case currentPlayer if (currentPlayer != move.player) => move.player
+    case currentPlayer if (currentPlayer == move.player) =>
+      throw new IllegalArgumentException(s"User '${move.player.name}' cannot perform two moves in a row.")
+    case _ => move.player
+  }
+
   val blanks = currentState.blanks - 1
   val positions = buildPositions()
 

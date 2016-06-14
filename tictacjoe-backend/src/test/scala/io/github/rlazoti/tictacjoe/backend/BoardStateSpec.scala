@@ -47,4 +47,26 @@ class AppTest extends FunSuite with Matchers {
     thirdMoveState.positions(2) should contain theSameElementsInOrderAs expectedThirdRow
   }
 
+  test("The same user cannot send more than one move in a row") {
+    val firstMoveState = NextState(initialState, Move(user, Position(1, 1)))
+    an [IllegalArgumentException] should be thrownBy NextState(firstMoveState, Move(user, Position(2, 2)))
+  }
+
+  // test("A draw game should not register new moves") {
+  //   val firstMoveState = NextState(initialState, Move(opponent, Position(1, 1)))
+  //   val secondMoveState = NextState(firstMoveState, Move(user, Position(2, 2)))
+  //   val thirdMoveState = NextState(secondMoveState, Move(opponent, Position(0, 0)))
+  //   val fourthMoveState = NextState(thirdMoveState, Move(user, Position(2, 0)))
+  //   val fifhtMoveState = NextState(fourthMoveState, Move(opponent, Position(2, 1)))
+
+  //   val expectedFirstRow = Array(opponent.mark, Game.EmptyPosition, Game.EmptyPosition)
+  //   val expectedSecondRow = Array(Game.EmptyPosition, opponent.mark, Game.EmptyPosition)
+  //   val expectedThirdRow = Array(Game.EmptyPosition, Game.EmptyPosition, user.mark)
+
+  //   thirdMoveState.blanks should be (InitialState().blanks - 3)
+  //   thirdMoveState.positions(0) should contain theSameElementsInOrderAs expectedFirstRow
+  //   thirdMoveState.positions(1) should contain theSameElementsInOrderAs expectedSecondRow
+  //   thirdMoveState.positions(2) should contain theSameElementsInOrderAs expectedThirdRow
+  // }
+
 }
