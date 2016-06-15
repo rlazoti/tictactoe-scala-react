@@ -1,5 +1,7 @@
 package io.github.rlazoti.tictacjoe.backend
 
+import io.github.rlazoti.tictacjoe.backend.models._
+
 object App extends App {
 
   val currentBoardId = 1

@@ -1,4 +1,4 @@
-package io.github.rlazoti.tictacjoe.backend
+package io.github.rlazoti.tictacjoe.backend.models
 
 trait BoardState {
 

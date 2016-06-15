@@ -1,4 +1,20 @@
-package io.github.rlazoti.tictacjoe.backend
+package io.github.rlazoti.tictacjoe.backend.models
+
+object Mark {
+
+  def getByType(markType: String): Mark =
+    markType match {
+      case "X" | "x" => MarkX()
+      case _ => MarkO()
+    }
+
+  def getOpponentMark(playerMark: Mark) =
+    playerMark match {
+      case MarkX() => MarkO()
+      case _ => MarkX()
+    }
+
+}
 
 trait Mark {
   def get: String

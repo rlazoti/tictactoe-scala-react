@@ -1,4 +1,4 @@
-package io.github.rlazoti.tictacjoe.backend
+package io.github.rlazoti.tictacjoe.backend.models
 
 import org.scalatest._
 
@@ -30,7 +30,15 @@ class BoardStateSpec extends FunSuite with Matchers {
     initialBoardState.draw() shouldBe false
   }
 
-  test("A opponent's move should be registered into a new Board's state") {
+  test("Board's initial state should not accept that user and opponent use the same mark") {
+    an [IllegalArgumentException] should be thrownBy
+    InitialBoardState(settings, User("Test 1", MarkX()), Computer(MarkX()))
+
+    an [IllegalArgumentException] should be thrownBy
+    InitialBoardState(settings, User("Test 2", MarkO()), Computer(MarkO()))
+  }
+
+  test("An opponent's move should be registered into a new Board's state") {
     val state = NextBoardState(initialBoardState, Move(0, 1))
     val expectedRow = Array(settings.emptyPositionValue, opponent.getMark, settings.emptyPositionValue)
 
