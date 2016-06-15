@@ -6,8 +6,8 @@ class BoardStateSpec extends FunSuite with Matchers {
 
   private implicit val settings = GameSettings(1, Easy())
   private val emptyRow = Array(settings.emptyPositionValue, settings.emptyPositionValue, settings.emptyPositionValue)
-  private val opponent = Computer()
-  private val user = User("Rafael")
+  private val opponent = Computer(MarkO())
+  private val user = User("Rafael", MarkX())
   private val initialBoardState = InitialBoardState(settings, user, opponent)
 
   test("All positions of Board's initial state should be blank") {
@@ -32,7 +32,7 @@ class BoardStateSpec extends FunSuite with Matchers {
 
   test("A opponent's move should be registered into a new Board's state") {
     val state = NextBoardState(initialBoardState, Move(0, 1))
-    val expectedRow = Array(settings.emptyPositionValue, Computer().mark, settings.emptyPositionValue)
+    val expectedRow = Array(settings.emptyPositionValue, opponent.getMark, settings.emptyPositionValue)
 
     state.player shouldBe opponent
     state.opponentPlayer shouldBe user
@@ -47,9 +47,9 @@ class BoardStateSpec extends FunSuite with Matchers {
     val secondMoveState = NextBoardState(firstMoveState, Move(2, 2))
     val thirdMoveState = NextBoardState(secondMoveState, Move(0, 0))
 
-    val expectedFirstRow = Array(opponent.mark, settings.emptyPositionValue, settings.emptyPositionValue)
-    val expectedSecondRow = Array(settings.emptyPositionValue, opponent.mark, settings.emptyPositionValue)
-    val expectedThirdRow = Array(settings.emptyPositionValue, settings.emptyPositionValue, user.mark)
+    val expectedFirstRow = Array(opponent.getMark, settings.emptyPositionValue, settings.emptyPositionValue)
+    val expectedSecondRow = Array(settings.emptyPositionValue, opponent.getMark, settings.emptyPositionValue)
+    val expectedThirdRow = Array(settings.emptyPositionValue, settings.emptyPositionValue, user.getMark)
 
     thirdMoveState.blanks should be (initialBoardState.blanks - 3)
     thirdMoveState.positions(0) should contain theSameElementsInOrderAs expectedFirstRow
@@ -68,9 +68,9 @@ class BoardStateSpec extends FunSuite with Matchers {
     val eighthMoveState = NextBoardState(seventhMoveState, Move(1, 0))
     val ninthMoveState = NextBoardState(eighthMoveState, Move(1, 2))
 
-    val expectedFirstRow = Array(opponent.mark, user.mark, opponent.mark)
-    val expectedSecondRow = Array(user.mark, opponent.mark, opponent.mark)
-    val expectedThirdRow = Array(user.mark, opponent.mark, user.mark)
+    val expectedFirstRow = Array(opponent.getMark, user.getMark, opponent.getMark)
+    val expectedSecondRow = Array(user.getMark, opponent.getMark, opponent.getMark)
+    val expectedThirdRow = Array(user.getMark, opponent.getMark, user.getMark)
 
     ninthMoveState.blanks shouldBe 0
     ninthMoveState.player shouldBe opponent

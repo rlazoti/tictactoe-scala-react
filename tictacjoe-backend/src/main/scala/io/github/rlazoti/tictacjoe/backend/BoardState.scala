@@ -21,7 +21,7 @@ trait BoardState {
     winningReverseDiagonal(somePlayer)
 
   private def checkValues(somePlayer: Player, values: Array[String]) =
-    values.foldLeft(true) { (acc, value) => acc && value == somePlayer.mark }
+    values.foldLeft(true) { (acc, value) => acc && value == somePlayer.getMark }
 
   private def winningDiagonal(somePlayer: Player) = {
     val values =
@@ -62,6 +62,9 @@ trait BoardState {
 case class InitialBoardState(val settings: GameSettings, val player: Player, val opponentPlayer: Player)
     extends BoardState {
 
+  if (player.getMark == opponentPlayer.getMark)
+    throw new IllegalArgumentException("Both player and opponent cannot use the same mark")
+
   val blanks = settings.boardWidth * settings.boardWidth
   val positions = Array.fill(settings.boardWidth, settings.boardWidth)(settings.emptyPositionValue)
 }
@@ -79,7 +82,7 @@ case class NextBoardState(currentState: BoardState, opponentsMove: Move) extends
 
   private def applyOpponentsMove(move: Move, opponent: Player) = {
     val newPositions = currentState.positions.map { values => values.map(identity) }
-    newPositions(move.row)(move.col) = opponent.mark
+    newPositions(move.row)(move.col) = opponent.getMark
     newPositions
   }
 
