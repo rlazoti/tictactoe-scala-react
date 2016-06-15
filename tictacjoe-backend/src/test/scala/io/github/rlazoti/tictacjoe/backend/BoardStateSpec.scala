@@ -4,11 +4,11 @@ import org.scalatest._
 
 class BoardStateSpec extends FunSuite with Matchers {
 
-  private implicit val settings = GameSettings()
+  private implicit val settings = GameSettings(1, Easy())
   private val emptyRow = Array(settings.emptyPositionValue, settings.emptyPositionValue, settings.emptyPositionValue)
   private val opponent = Computer()
   private val user = User("Rafael")
-  private val initialBoardState = InitialBoardState()
+  private val initialBoardState = InitialBoardState(settings, user, opponent)
 
   test("All positions of Board's initial state should be blank") {
     initialBoardState.blanks should be (settings.boardWidth * settings.boardWidth)
@@ -17,29 +17,35 @@ class BoardStateSpec extends FunSuite with Matchers {
     }
   }
 
-  test("Board's initial state should not define the last move's player") {
-    initialBoardState.lastMovePlayer shouldBe None
+  test("Board's initial state should have a player and its opponent") {
+    initialBoardState.player shouldBe user
+    initialBoardState.opponentPlayer shouldBe opponent
   }
 
   test("Board's initial state should not define the game as over") {
-    initialBoardState.over(user, opponent) should be (false)
+    initialBoardState.over() shouldBe false
   }
 
-  test("An user's move should be registered into Board's state") {
-    val state = NextBoardState(initialBoardState, Move(opponent, Position(0, 1)))
+  test("Board's initial state should not define the game as draw") {
+    initialBoardState.draw() shouldBe false
+  }
+
+  test("A opponent's move should be registered into a new Board's state") {
+    val state = NextBoardState(initialBoardState, Move(0, 1))
     val expectedRow = Array(settings.emptyPositionValue, Computer().mark, settings.emptyPositionValue)
 
+    state.player shouldBe opponent
+    state.opponentPlayer shouldBe user
     state.blanks should be (initialBoardState.blanks - 1)
-    state.lastMovePlayer shouldBe Some(opponent)
     state.positions(0) should contain theSameElementsInOrderAs expectedRow
     state.positions(1) should contain theSameElementsInOrderAs emptyRow
     state.positions(2) should contain theSameElementsInOrderAs emptyRow
   }
 
-  test("Three users' moves should be registered into Board's state") {
-    val firstMoveState = NextBoardState(initialBoardState, Move(opponent, Position(1, 1)))
-    val secondMoveState = NextBoardState(firstMoveState, Move(user, Position(2, 2)))
-    val thirdMoveState = NextBoardState(secondMoveState, Move(opponent, Position(0, 0)))
+  test("Three moves should be registered into a new Board's state") {
+    val firstMoveState = NextBoardState(initialBoardState, Move(1, 1))
+    val secondMoveState = NextBoardState(firstMoveState, Move(2, 2))
+    val thirdMoveState = NextBoardState(secondMoveState, Move(0, 0))
 
     val expectedFirstRow = Array(opponent.mark, settings.emptyPositionValue, settings.emptyPositionValue)
     val expectedSecondRow = Array(settings.emptyPositionValue, opponent.mark, settings.emptyPositionValue)
@@ -51,28 +57,23 @@ class BoardStateSpec extends FunSuite with Matchers {
     thirdMoveState.positions(2) should contain theSameElementsInOrderAs expectedThirdRow
   }
 
-  test("The same user cannot send more than one move in a row") {
-    val firstMoveState = NextBoardState(initialBoardState, Move(user, Position(1, 1)))
-    an [IllegalArgumentException] should be thrownBy NextBoardState(firstMoveState, Move(user, Position(2, 2)))
-  }
-
   test("A draw game state should have all positions defined") {
-    val firstMoveState = NextBoardState(initialBoardState, Move(opponent, Position(1, 1)))
-    val secondMoveState = NextBoardState(firstMoveState, Move(user, Position(2, 2)))
-    val thirdMoveState = NextBoardState(secondMoveState, Move(opponent, Position(0, 0)))
-    val fourthMoveState = NextBoardState(thirdMoveState, Move(user, Position(2, 0)))
-    val fifhtMoveState = NextBoardState(fourthMoveState, Move(opponent, Position(2, 1)))
-    val sixthMoveState = NextBoardState(fifhtMoveState, Move(user, Position(0, 1)))
-    val seventhMoveState = NextBoardState(sixthMoveState, Move(opponent, Position(0, 2)))
-    val eighthMoveState = NextBoardState(seventhMoveState, Move(user, Position(1, 0)))
-    val ninthMoveState = NextBoardState(eighthMoveState, Move(opponent, Position(1, 2)))
+    val firstMoveState = NextBoardState(initialBoardState, Move(1, 1))
+    val secondMoveState = NextBoardState(firstMoveState, Move(2, 2))
+    val thirdMoveState = NextBoardState(secondMoveState, Move(0, 0))
+    val fourthMoveState = NextBoardState(thirdMoveState, Move(2, 0))
+    val fifhtMoveState = NextBoardState(fourthMoveState, Move(2, 1))
+    val sixthMoveState = NextBoardState(fifhtMoveState, Move(0, 1))
+    val seventhMoveState = NextBoardState(sixthMoveState, Move(0, 2))
+    val eighthMoveState = NextBoardState(seventhMoveState, Move(1, 0))
+    val ninthMoveState = NextBoardState(eighthMoveState, Move(1, 2))
 
     val expectedFirstRow = Array(opponent.mark, user.mark, opponent.mark)
     val expectedSecondRow = Array(user.mark, opponent.mark, opponent.mark)
     val expectedThirdRow = Array(user.mark, opponent.mark, user.mark)
 
     ninthMoveState.blanks shouldBe 0
-    ninthMoveState.lastMovePlayer shouldBe Some(opponent)
+    ninthMoveState.player shouldBe opponent
 
     ninthMoveState.positions(0) should contain theSameElementsInOrderAs expectedFirstRow
     ninthMoveState.positions(1) should contain theSameElementsInOrderAs expectedSecondRow
@@ -80,22 +81,22 @@ class BoardStateSpec extends FunSuite with Matchers {
 
     ninthMoveState.won(user) shouldBe false
     ninthMoveState.won(opponent) shouldBe false
-    ninthMoveState.over(user, opponent) shouldBe true
-    ninthMoveState.draw(user, opponent) shouldBe true
+    ninthMoveState.over() shouldBe true
+    ninthMoveState.draw() shouldBe true
   }
 
-  test("A draw board game should not accept new moves") {
-    val firstMoveState = NextBoardState(initialBoardState, Move(opponent, Position(1, 1)))
-    val secondMoveState = NextBoardState(firstMoveState, Move(user, Position(2, 2)))
-    val thirdMoveState = NextBoardState(secondMoveState, Move(opponent, Position(0, 0)))
-    val fourthMoveState = NextBoardState(thirdMoveState, Move(user, Position(2, 0)))
-    val fifhtMoveState = NextBoardState(fourthMoveState, Move(opponent, Position(2, 1)))
-    val sixthMoveState = NextBoardState(fifhtMoveState, Move(user, Position(0, 1)))
-    val seventhMoveState = NextBoardState(sixthMoveState, Move(opponent, Position(0, 2)))
-    val eighthMoveState = NextBoardState(seventhMoveState, Move(user, Position(1, 0)))
-    val ninthMoveState = NextBoardState(eighthMoveState, Move(opponent, Position(1, 2)))
+  test("A draw board game state should not accept new moves") {
+    val firstMoveState = NextBoardState(initialBoardState, Move(1, 1))
+    val secondMoveState = NextBoardState(firstMoveState, Move(2, 2))
+    val thirdMoveState = NextBoardState(secondMoveState, Move(0, 0))
+    val fourthMoveState = NextBoardState(thirdMoveState, Move(2, 0))
+    val fifhtMoveState = NextBoardState(fourthMoveState, Move(2, 1))
+    val sixthMoveState = NextBoardState(fifhtMoveState, Move(0, 1))
+    val seventhMoveState = NextBoardState(sixthMoveState, Move(0, 2))
+    val eighthMoveState = NextBoardState(seventhMoveState, Move(1, 0))
+    val ninthMoveState = NextBoardState(eighthMoveState, Move(1, 2))
 
-    an [UnsupportedOperationException] should be thrownBy NextBoardState(ninthMoveState, Move(user, Position(1, 1)))
+    an [UnsupportedOperationException] should be thrownBy NextBoardState(ninthMoveState, Move(1, 1))
   }
 
 }

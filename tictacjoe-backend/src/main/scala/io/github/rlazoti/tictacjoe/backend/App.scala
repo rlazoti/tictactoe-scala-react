@@ -3,26 +3,25 @@ package io.github.rlazoti.tictacjoe.backend
 object App extends App {
 
   val currentBoardId = 1
-  implicit val settings = GameSettings()
-  val currentBoard = Board(currentBoardId, settings, User("Rodrigo"), Computer(), InitialBoardState())
+  val settings = GameSettings(currentBoardId, Easy())
+  val currentBoard = Board.newGame(settings, User("Rodrigo"), Computer())
   var boards = List(currentBoard)
 
   val moves = List(
-    Move(currentBoard.player, Position(0, 2)),
-    Move(currentBoard.opponentPlayer, Position(1, 0)),
-    Move(currentBoard.player, Position(2, 0)),
-    Move(currentBoard.opponentPlayer, Position(1, 2)),
-    Move(currentBoard.player, Position(1, 1)),
-    Move(currentBoard.opponentPlayer, Position(2, 2))
+    Move(0, 2),
+    Move(1, 0),
+    Move(2, 0),
+    Move(1, 2),
+    Move(1, 1),
+    Move(2, 2)
   )
 
   currentBoard.printCurrentState()
 
   moves.foreach { nextMove =>
     boards = boards
-      .filter { board => board.id == currentBoardId }
+      .filter { board => board.settings.gameId == currentBoardId }
       .map { board => board.addMove(nextMove) }
-      //.map { board => board.printCurrentState(); board }
   }
 
 }

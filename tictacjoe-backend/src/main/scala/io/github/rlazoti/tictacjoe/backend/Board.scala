@@ -1,33 +1,35 @@
 package io.github.rlazoti.tictacjoe.backend
 
-case class Position(val row: Int, val col: Int)
+case class Move(val row: Int, val col: Int)
 
-case class Move(val player: Player, val position: Position)
+object Board {
+
+  def newGame(settings: GameSettings, player: Player, opponentPlayer: Player) =
+    Board(settings, InitialBoardState(settings, player, opponentPlayer))
+
+}
 
 case class Board(
-  val id: Int,
   val settings: GameSettings,
-  val player: Player,
-  val opponentPlayer: Player,
   val currentState: BoardState) {
 
   private def isEnded() =
-    currentState.over(player, opponentPlayer)
+    currentState.over()
 
-  private def userWon() =
-    currentState.won(player)
+  private def playerWon() =
+    currentState.won(currentState.player)
 
   private def opponentWon() =
-    currentState.won(opponentPlayer)
+    currentState.won(currentState.opponentPlayer)
 
   private def draw() =
-    currentState.draw(player, opponentPlayer)
+    currentState.draw()
 
   def addMove(move: Move): Board = {
     if (isEnded()) this
     else {
-      val board = Board(id, settings, player, opponentPlayer, NextBoardState(currentState, move))
-      println(s"next move => ${move.player.name} marks ${move.position}")
+      val board = Board(settings, NextBoardState(currentState, move))
+      println(s"next move => ${board.currentState.player.name} marks ${move}")
       board.printCurrentState()
       board
     }
@@ -35,14 +37,14 @@ case class Board(
 
   def printCurrentState() = {
     val message =
-      if (userWon()) s"${player.name} won!"
-      else if (opponentWon()) s"${opponentPlayer.name} won!"
+      if (playerWon()) s"${currentState.player.name} won!"
+      else if (opponentWon()) s"${currentState.opponentPlayer.name} won!"
       else if (draw()) s"Game Draw!"
       else "Game is not over yet!"
 
     println(s"""
       #=============== Board =================
-      #id: $id
+      #id: ${settings.gameId}
       #status: ${message}
       #blanks: ${currentState.blanks}
       #positions:
