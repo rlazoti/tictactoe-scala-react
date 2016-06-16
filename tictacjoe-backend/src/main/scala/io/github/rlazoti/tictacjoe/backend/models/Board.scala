@@ -9,6 +9,8 @@ object Board {
 
 }
 
+case class BoardData(val positions: Array[Array[String]], val gameId: Int)
+
 case class Board(
   val settings: GameSettings,
   val currentState: BoardState) {
@@ -24,6 +26,9 @@ case class Board(
 
   private def draw() =
     currentState.draw()
+
+  def toData: BoardData =
+    BoardData(currentState.positions, settings.gameId)
 
   def addMove(move: Move): Board = {
     if (isEnded()) this

@@ -1,21 +1,24 @@
 package io.github.rlazoti.tictacjoe.backend.services
 
 import io.github.rlazoti.tictacjoe.backend.models._
-import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import scala.concurrent.{ ExecutionContext, Future }
-import spray.json._
 
-class GameService(implicit val executionContext: ExecutionContext) extends DefaultJsonProtocol {
+class GameService(implicit val executionContext: ExecutionContext) {
 
-  protected implicit val NewGameFormat = jsonFormat3(NewGame)
-  protected implicit val BoardFormat = jsonFormat3(Board)
-  private var boards = List()
+  private var boards = List[Board]()
 
   def createNewGame(newGameData: NewGame): Future[Board] =
     for {
       settings <- createSettings(newGameData)
       (player, opponent) <- createGamePlayers(newGameData)
-    } yield Board.newGame(settings, player, opponent)
+      board <- generateNewBoard(settings, player, opponent)
+    } yield board
+
+  private def generateNewBoard(settings: GameSettings, player: Player, opponentPlayer: Player): Future[Board] =
+    Future { Board.newGame(settings, player, opponentPlayer) }
+
+  private def findGame(gameId: Int): Future[Option[Board]] =
+    Future { boards.find(board => board.settings.gameId == gameId) }
 
   private def generateGameId(): Future[Int] =
     Future { scala.util.Random.nextInt(99999999) + 1 }
