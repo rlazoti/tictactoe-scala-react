@@ -7,6 +7,13 @@ class GameService(implicit val executionContext: ExecutionContext) {
 
   private var boards = List[Board]()
 
+  def addPlayersMove(playersMove: GameMove): Future[Board] = {
+    findGame(playersMove.gameId).flatMap {
+      case Some(board) => assignMove(board, playersMove)
+      case _ => throw new IllegalArgumentException("There's no board for this game.")
+    }
+  }
+
   def createNewGame(newGameData: NewGame): Future[Board] =
     for {
       settings <- createSettings(newGameData)
@@ -14,14 +21,38 @@ class GameService(implicit val executionContext: ExecutionContext) {
       board <- generateNewBoard(settings, player, opponent)
     } yield board
 
+  private def assignMove(board: Board, playersMove: GameMove): Future[Board] =
+    Future {
+      val newBoard = board.addMove(Move(playersMove.row, playersMove.col))
+
+      boards = boards.map { board =>
+        if (board.settings.gameId == newBoard.settings.gameId) newBoard
+        else board
+      }
+
+      newBoard
+    }
+
   private def generateNewBoard(settings: GameSettings, player: Player, opponentPlayer: Player): Future[Board] =
-    Future { Board.newGame(settings, player, opponentPlayer) }
+    Future {
+      val newBoard = Board.newGame(settings, player, opponentPlayer)
+      boards = boards :+ newBoard
+      newBoard
+    }
 
   private def findGame(gameId: Int): Future[Option[Board]] =
     Future { boards.find(board => board.settings.gameId == gameId) }
 
-  private def generateGameId(): Future[Int] =
-    Future { scala.util.Random.nextInt(99999999) + 1 }
+  private def generateGameId(): Future[Int] = {
+    val newIdFuture: Future[Int] = Future { scala.util.Random.nextInt(99999999) + 1 }
+
+    newIdFuture.flatMap { newId =>
+      findGame(newId).flatMap {
+        case Some(board) => generateGameId()
+        case _ => Future { newId }
+      }
+    }
+  }
 
   private def createSettings(newGameData: NewGame): Future[GameSettings] =
     generateGameId().map { id => GameSettings(id, newGameData.getLevel()) }

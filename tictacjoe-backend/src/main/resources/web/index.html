@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style/app.css">
+    <title>Bootstrap 101 Template</title>
+  </head>
+  <body>
+    <div id="container" class="container"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-with-addons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+    <script type="text/babel">
+     var Game = React.createClass({
+       render : function() {
+         return(
+           <div className="row">
+             <div className="col-xs-4 col-xs-offset-4">
+               <table id="board">
+                 <tr id="row0">
+                   <td id="r0-c0"></td>
+                   <td id="r0-c1"></td>
+                   <td id="r0-c2"></td>
+                 </tr>
+                 <tr id="row1">
+                   <td id="r1-c0"></td>
+                   <td id="r1-c1"></td>
+                   <td id="r1-c2"></td>
+                 </tr>
+                 <tr id="row2">
+                   <td id="r2-c0"></td>
+                   <td id="r2-c1"></td>
+                   <td id="r2-c2"></td>
+                 </tr>
+               </table>
+             </div>
+           </div>
+         );
+       }
+     });
+
+     var GameSettings = React.createClass({
+       startClickHandler : function() {
+         var playerName = $("#username").val();
+         var mark = $('input[name="markType"]:checked').val();
+         var formdata = { "level":"easy", "playerName":playerName, "playerMark":mark };
+
+           /* $.post({
+           *   type: "POST",
+           *   //contentType: "application/json",
+           *   beforeSend: function(xhrObj) {
+           *     xhrObj.setRequestHeader("Content-Type","application/json");
+           *   },
+           *   data: data,
+           *   dataType: "json",
+           *   url: "http://localhost:8080/game/new",
+           *   success: function(json) {
+           *      console.log(json);
+           *      ReactDOM.render(<Game />, document.getElementById("container"));
+           *   }
+           * });*/
+
+
+           $.ajax({
+             type: "GET",
+             url: "http://localhost:8080/game/new",
+             data: formdata,
+             success: function(r) { alert(r); },
+             error: function(x, opt, err) { alert(err); },
+             dataType: 'json'
+           });
+
+           /* $.post("http://localhost:8080/game/new", data, function(res) {
+           *   console.log(res);
+           *   ReactDOM.render(<Game />, document.getElementById("container"));
+           * }, "json");*/
+
+           /* $.ajax("http://localhost:8080/game/new", {
+           *    beforeSend: function(xhrObj) {
+           *      xhrObj.setRequestHeader("Content-Type","application/json");
+           *    },
+           *   async: true,
+           *    type: "POST",
+           *    contentType: "application/json",
+           *    data: data,
+           *    dataType: "json",
+           *    success: function(json) {
+           *      console.log(json);
+           *      ReactDOM.render(<Game />, document.getElementById("container"));
+           *    }
+           *  });*/
+       },
+
+       addMoveHandler : function(row, col) {
+         
+       },
+
+       render : function() {
+         return (
+           <div className="row">
+             <div className="row">
+               <div className="col-xs-4">Who Starts?</div>
+               <div className="col-xs-4">
+                 <input type="radio" id="cpuStarts" name="whoStarts" value="computer" />
+                 <label for="cpuStarts">You Start!</label>
+               </div>
+               <div className="col-xs-4">
+                 <input type="radio" id="userStarts" name="whoStarts" value="user" />
+                 <label for="userStarts">I'll Start!</label>
+               </div>
+             </div>
+             <div className="row">
+               <div className="col-xs-6">Your Name: <input type="text" id="username" /></div>
+               <div className="col-xs-6">
+                 Your Mark:
+                 <input type="radio" id="xmark" name="markType" value="X" />
+                 <label for="xmark">X</label>
+                 <input type="radio" id="omark" name="markType" value="O" />
+                 <label for="omark">O</label>
+               </div>
+             </div>
+             <div id="row">
+               <div className="col-xs-4 col-xs-offset-4">
+                 <button id="start" onClick={this.startClickHandler}>Start</button>
+               </div>
+             </div>
+           </div>
+         );
+       }
+     });
+
+     ReactDOM.render(<GameSettings />, document.getElementById("container"));
+
+    </script>
+  </body>
+</html>

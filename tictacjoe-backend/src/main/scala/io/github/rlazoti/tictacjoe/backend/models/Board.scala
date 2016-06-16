@@ -1,7 +1,5 @@
 package io.github.rlazoti.tictacjoe.backend.models
 
-case class Move(val row: Int, val col: Int)
-
 object Board {
 
   def newGame(settings: GameSettings, player: Player, opponentPlayer: Player) =
@@ -9,6 +7,8 @@ object Board {
 
 }
 
+case class Move(val row: Int, val col: Int)
+case class GameMove(val row: Int, val col: Int, val gameId: Int)
 case class BoardData(val positions: Array[Array[String]], val gameId: Int)
 
 case class Board(

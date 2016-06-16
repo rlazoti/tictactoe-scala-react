@@ -81,6 +81,9 @@ case class NextBoardState(currentState: BoardState, opponentsMove: Move) extends
   val positions = applyOpponentsMove(opponentsMove, currentState.opponentPlayer)
 
   private def applyOpponentsMove(move: Move, opponent: Player) = {
+    if (!currentState.positions(move.row)(move.col).equals(settings.emptyPositionValue))
+      throw new UnsupportedOperationException("It's not valid to mark an already marked position.")
+
     val newPositions = currentState.positions.map { values => values.map(identity) }
     newPositions(move.row)(move.col) = opponent.getMark
     newPositions
