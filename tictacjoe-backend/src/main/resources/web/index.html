@@ -44,59 +44,22 @@
      });
 
      var GameSettings = React.createClass({
+
        startClickHandler : function() {
          var playerName = $("#username").val();
          var mark = $('input[name="markType"]:checked').val();
          var formdata = { "level":"easy", "playerName":playerName, "playerMark":mark };
 
-           /* $.post({
-           *   type: "POST",
-           *   //contentType: "application/json",
-           *   beforeSend: function(xhrObj) {
-           *     xhrObj.setRequestHeader("Content-Type","application/json");
-           *   },
-           *   data: data,
-           *   dataType: "json",
-           *   url: "http://localhost:8080/game/new",
-           *   success: function(json) {
-           *      console.log(json);
-           *      ReactDOM.render(<Game />, document.getElementById("container"));
-           *   }
-           * });*/
+         var onSuccess = function(result) {
+           ReactDOM.render(<Game id="{result.gameId}" />, document.getElementById("container"));
+         };
 
+         var onError = function(jqXHR, textStatus, errorThrown) {
+         };
 
-           $.ajax({
-             type: "GET",
-             url: "http://localhost:8080/game/new",
-             data: formdata,
-             success: function(r) { alert(r); },
-             error: function(x, opt, err) { alert(err); },
-             dataType: 'json'
-           });
-
-           /* $.post("http://localhost:8080/game/new", data, function(res) {
-           *   console.log(res);
-           *   ReactDOM.render(<Game />, document.getElementById("container"));
-           * }, "json");*/
-
-           /* $.ajax("http://localhost:8080/game/new", {
-           *    beforeSend: function(xhrObj) {
-           *      xhrObj.setRequestHeader("Content-Type","application/json");
-           *    },
-           *   async: true,
-           *    type: "POST",
-           *    contentType: "application/json",
-           *    data: data,
-           *    dataType: "json",
-           *    success: function(json) {
-           *      console.log(json);
-           *      ReactDOM.render(<Game />, document.getElementById("container"));
-           *    }
-           *  });*/
-       },
-
-       addMoveHandler : function(row, col) {
-         
+         $.get({url: "http://localhost:8080/game/new", data: formdata, dataType: "json"})
+          .done(onSuccess)
+          .fail(onError);
        },
 
        render : function() {

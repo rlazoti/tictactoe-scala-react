@@ -18,6 +18,6 @@ case class NewGame(level: String, playerName: String, playerMark: String) {
 
 
 case class GameSettings(val gameId: Int, val level: Difficulty = Normal()) {
-  val emptyPositionValue: String = "-"
+  val emptyPositionValue: String = " "
   val boardWidth: Int = 3
 }
