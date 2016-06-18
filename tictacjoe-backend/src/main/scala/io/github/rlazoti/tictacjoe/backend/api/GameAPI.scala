@@ -28,7 +28,7 @@ class GameAPI(implicit val executionContext: ExecutionContext) extends DefaultJs
 
   val routes =
     (enableCORS & pathPrefix("game")) {
-      (path("new") & get & parameters("level", "playerName", "playerMark").as(NewGame)) { newGame =>
+      (path("new") & get & parameters("level", "playerMark", "whoStarts").as(NewGame)) { newGame =>
         complete(service.createNewGame(newGame).map { board => board.toData.toJson })
       } ~
       (path("move") & get & parameters("row".as[Int], "col".as[Int], "gameId".as[Int]).as(GameMove)) { newMove =>

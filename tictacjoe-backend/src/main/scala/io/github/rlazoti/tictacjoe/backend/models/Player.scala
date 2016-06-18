@@ -34,10 +34,11 @@ trait Player {
 }
 
 case class Computer(mark: Mark) extends Player {
-  val name = "CPU"
+  val name = "Computer"
   val getMark = mark.get
 }
 
-case class User(val name: String, mark: Mark) extends Player {
+case class User(mark: Mark) extends Player {
+  val name = "You"
   val getMark = mark.get
 }

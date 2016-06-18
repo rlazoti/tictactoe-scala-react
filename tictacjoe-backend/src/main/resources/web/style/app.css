@@ -4,8 +4,14 @@ table#board {
   position: relative;
 }
 
+table#board tr {
+  width: 100%;
+  height: 33.333%;
+}
+
 table#board td {
   width: 33.333%;
+  height: 100%;
   border: 6px solid #222;
 }
 
@@ -15,8 +21,14 @@ table#board td::after {
   margin-top: 100%;
 }
 
-table#board td {
-  border: 6px solid #222;
+table#board td .piece {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+table#board td .piece:hover {
+  background-color: red;
 }
 
 table#board td:first-of-type {
@@ -35,4 +47,9 @@ table#board td:nth-of-type(3) {
 
 table#board tr:nth-of-type(3) td {
   border-bottom-color: transparent;
+}
+
+.row-title {
+  padding-top: 20px;
+  padding-bottom: 20px;
 }

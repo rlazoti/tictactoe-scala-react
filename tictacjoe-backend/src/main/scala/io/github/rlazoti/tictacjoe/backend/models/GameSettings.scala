@@ -5,7 +5,7 @@ case class Easy() extends Difficulty
 case class Normal() extends Difficulty
 case class Hard() extends Difficulty
 
-case class NewGame(level: String, playerName: String, playerMark: String) {
+case class NewGame(level: String, playerMark: String, whoStarts: String) {
 
   def getLevel(): Difficulty =
     level match {
@@ -18,6 +18,6 @@ case class NewGame(level: String, playerName: String, playerMark: String) {
 
 
 case class GameSettings(val gameId: Int, val level: Difficulty = Normal()) {
-  val emptyPositionValue: String = " "
+  val emptyPositionValue: String = "-"
   val boardWidth: Int = 3
 }

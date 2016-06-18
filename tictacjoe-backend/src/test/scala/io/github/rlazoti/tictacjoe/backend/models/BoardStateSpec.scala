@@ -7,7 +7,7 @@ class BoardStateSpec extends FunSuite with Matchers {
   private implicit val settings = GameSettings(1, Easy())
   private val emptyRow = Array(settings.emptyPositionValue, settings.emptyPositionValue, settings.emptyPositionValue)
   private val opponent = Computer(MarkO())
-  private val user = User("Rafael", MarkX())
+  private val user = User(MarkX())
   private val initialBoardState = InitialBoardState(settings, user, opponent)
 
   test("All positions of Board's initial state should be blank") {

@@ -9,55 +9,128 @@
     <title>Bootstrap 101 Template</title>
   </head>
   <body>
-    <div id="container" class="container"></div>
+    <div class="container">
+      <div class="row row-title">
+        <div class="col-xs-12 text-center">
+          <h1 class="text-primary">Tic Tac Joe</h1>
+        </div>
+      </div>
+      <div id="game-container">
+      </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-with-addons.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
     <script type="text/babel">
-     var Game = React.createClass({
+     var GameSettingsFirstStep = React.createClass({
+       clickHandler : function(level) {
+         ReactDOM.render(<GameSettingsSecondStep level={level} />, document.getElementById("game-container"));
+       },
+
        render : function() {
-         return(
+         return (
            <div className="row">
-             <div className="col-xs-4 col-xs-offset-4">
-               <table id="board">
-                 <tr id="row0">
-                   <td id="r0-c0"></td>
-                   <td id="r0-c1"></td>
-                   <td id="r0-c2"></td>
-                 </tr>
-                 <tr id="row1">
-                   <td id="r1-c0"></td>
-                   <td id="r1-c1"></td>
-                   <td id="r1-c2"></td>
-                 </tr>
-                 <tr id="row2">
-                   <td id="r2-c0"></td>
-                   <td id="r2-c1"></td>
-                   <td id="r2-c2"></td>
-                 </tr>
-               </table>
+             <div className="row row-title">
+               <div className="col-xs-12 text-center">
+                 <h2>Choose the Difficulty</h2>
+               </div>
+             </div>
+             <div className="row">
+               <div className="col-xs-12 text-center">
+                 <div className="btn-group btn-group-lg" role="group" aria-label="...">
+                   <button type="button" className="btn btn-default" onClick={this.clickHandler.bind(this, "easy")}>Piece of Cake</button>
+                   <button type="button" className="btn btn-warning" onClick={this.clickHandler.bind(this, "normal")}>Normal</button>
+                   <button type="button" className="btn btn-danger" onClick={this.clickHandler.bind(this, "hard")}>Impossible</button>
+                 </div>
+               </div>
              </div>
            </div>
          );
        }
      });
 
-     var GameSettings = React.createClass({
+     var GameSettingsSecondStep = React.createClass({
+       clickHandler : function(mark) {
+         ReactDOM.render(<GameSettingsThirdStep level={this.props.level} playerMark={mark} />, document.getElementById("game-container"));
+       },
 
-       startClickHandler : function() {
-         var playerName = $("#username").val();
-         var mark = $('input[name="markType"]:checked').val();
-         var formdata = { "level":"easy", "playerName":playerName, "playerMark":mark };
+       render : function() {
+         return (
+           <div className="row">
+             <div className="row row-title">
+               <div className="col-xs-12 text-center">
+                 <h2>OK! Now choose your Piece</h2>
+               </div>
+             </div>
+             <div className="row">
+               <div className="col-xs-12 text-center">
+                 <div className="btn-group btn-group-lg" role="group" aria-label="...">
+                   <button type="button" className="btn btn-success" onClick={this.clickHandler.bind(this, "O")}>&nbsp;&nbsp;O&nbsp;&nbsp;</button>
+                   <button type="button" className="btn btn-primary" onClick={this.clickHandler.bind(this, "X")}>&nbsp;&nbsp;X&nbsp;&nbsp;</button>
+                 </div>
+               </div>
+             </div>
+           </div>
+         );
+       }
+     });
 
+     var GameSettingsThirdStep = React.createClass({
+         clickHandler : function(whoStarts) {
+           var onSuccess = function(result) {
+             ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} />, document.getElementById("game-container"));
+           };
+
+           var onError = function(jqXHR, textStatus, errorThrown) {
+             console.log(jqXHR);
+           };
+
+           var formdata = {
+             "level" : this.props.level,
+             "playerMark" : this.props.playerMark,
+             "whoStarts" : whoStarts
+           };
+
+           $.get({url: "http://localhost:8080/game/new", data: formdata, dataType: "json"})
+            .done(onSuccess)
+            .fail(onError);
+       },
+
+       render : function() {
+         return (
+           <div className="row">
+             <div className="row row-title">
+               <div className="col-xs-12 text-center">
+                 <h2>Great! Who will Start?</h2>
+               </div>
+             </div>
+             <div className="row">
+               <div className="col-xs-12 text-center">
+                 <div className="btn-group btn-group-lg" role="group" aria-label="...">
+                   <button type="button" className="btn btn-success" onClick={this.clickHandler.bind(this, "Computer")}>Computer.</button>
+                   <button type="button" className="btn btn-primary" onClick={this.clickHandler.bind(this, "You")}>I'll Start!</button>
+                 </div>
+               </div>
+             </div>
+           </div>
+         );
+       }
+     });
+
+    var NewGame = React.createClass({
+
+       clickHandler : function() {
          var onSuccess = function(result) {
-           ReactDOM.render(<Game id="{result.gameId}" />, document.getElementById("container"));
+           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} />, document.getElementById("game-container"));
          };
 
          var onError = function(jqXHR, textStatus, errorThrown) {
+           alert(textStatus);
          };
 
-         $.get({url: "http://localhost:8080/game/new", data: formdata, dataType: "json"})
+         $.get({url: "http://localhost:8080/game/move", data: formdata, dataType: "json"})
           .done(onSuccess)
           .fail(onError);
        },
@@ -66,29 +139,26 @@
          return (
            <div className="row">
              <div className="row">
-               <div className="col-xs-4">Who Starts?</div>
-               <div className="col-xs-4">
-                 <input type="radio" id="cpuStarts" name="whoStarts" value="computer" />
-                 <label for="cpuStarts">You Start!</label>
-               </div>
-               <div className="col-xs-4">
-                 <input type="radio" id="userStarts" name="whoStarts" value="user" />
-                 <label for="userStarts">I'll Start!</label>
-               </div>
-             </div>
-             <div className="row">
-               <div className="col-xs-6">Your Name: <input type="text" id="username" /></div>
-               <div className="col-xs-6">
-                 Your Mark:
-                 <input type="radio" id="xmark" name="markType" value="X" />
-                 <label for="xmark">X</label>
-                 <input type="radio" id="omark" name="markType" value="O" />
-                 <label for="omark">O</label>
-               </div>
-             </div>
-             <div id="row">
                <div className="col-xs-4 col-xs-offset-4">
-                 <button id="start" onClick={this.startClickHandler}>Start</button>
+                 <table id="board">
+                   <tbody>
+                     <tr id="row0">
+                       <td id="r0-c0" className="text-center"><div className="piece">{this.props.positions[0][0]}</div></td>
+                       <td id="r0-c1" className="text-center"><div className="piece">{this.props.positions[0][1]}</div></td>
+                       <td id="r0-c2" className="text-center"><div className="piece">{this.props.positions[0][2]}</div></td>
+                     </tr>
+                     <tr id="row1 text-center">
+                       <td id="r1-c0" className="text-center"><div className="piece">{this.props.positions[1][0]}</div></td>
+                       <td id="r1-c1" className="text-center"><div className="piece">{this.props.positions[1][1]}</div></td>
+                       <td id="r1-c2" className="text-center"><div className="piece">{this.props.positions[1][2]}</div></td>
+                     </tr>
+                     <tr id="row2 text-center">
+                       <td id="r2-c0" className="text-center"><div className="piece">{this.props.positions[2][0]}</div></td>
+                       <td id="r2-c1" className="text-center"><div className="piece">{this.props.positions[2][1]}</div></td>
+                       <td id="r2-c2" className="text-center"><div className="piece">{this.props.positions[2][2]}</div></td>
+                     </tr>
+                   </tbody>
+                 </table>
                </div>
              </div>
            </div>
@@ -96,8 +166,7 @@
        }
      });
 
-     ReactDOM.render(<GameSettings />, document.getElementById("container"));
-
+     ReactDOM.render(<GameSettingsFirstStep />, document.getElementById("game-container"));
     </script>
   </body>
 </html>

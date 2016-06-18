@@ -67,7 +67,7 @@ class GameService(implicit val executionContext: ExecutionContext) {
   private def createGamePlayers(newGameData: NewGame): Future[(Player, Player)] =
     createPlayersMarks(newGameData).map {
       case (playerMark, opponentMark) =>
-        (User(newGameData.playerName, playerMark), Computer(opponentMark))
+        (User(playerMark), Computer(opponentMark))
     }
 
 }
