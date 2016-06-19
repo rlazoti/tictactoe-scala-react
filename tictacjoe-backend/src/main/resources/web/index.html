@@ -171,72 +171,32 @@
        },
 
        render : function() {
+
+         var generateColumn = function(that, positions, row) {
+           return positions.map(function(value, col) {
+             var id = "r" + row + "-c" + col;
+
+             return <td key={"r" + id} className="text-center">
+               <div id={id} key={"d" + id} onClick={that.clickHandler.bind(that, row, col)} onMouseOver={that.hoverHandler.bind(that, row, col)} className={that.classHandler(row, col)}>
+                 {value}
+               </div>
+             </td>;
+           });
+         };
+
+         var generateRows = function(that, positions) {
+           return positions.map(function(value, row) {
+             return <tr key={row}>{generateColumn(that, value, row)}</tr>;
+           });
+         };
+
          return (
            <div className="row">
              <div className="row">
                <div className="col-xs-4 col-xs-offset-4">
                  <table id="board">
                    <tbody>
-                     {this.props.positions.map(function(row) {
-                       return <tr>
-                                {this.props.positions[row].map(function(col) {
-                                  return <td className="text-center">
-                                           <div onClick={this.clickHandler.bind(this, row, col)} onMouseOver={this.hoverHandler.bind(this, row, col)} className={this.classHandler(row, col)}>
-                                             {this.props.positions[0][0]}
-                                           </div>
-                                         </td>;
-                                })}
-                              </tr>;
-                     })}
-                       <td className="text-center">
-                         <div onClick={this.clickHandler.bind(this, 0, 0)} onMouseOver={this.hoverHandler.bind(this, 0, 0)} className={this.classHandler(0, 0)}>
-                           {this.props.positions[0][0]}
-                         </div>
-                       </td>
-                       <td className="text-center">
-                         <div onClick={this.clickHandler.bind(this, 0, 1)} onMouseOver={this.hoverHandler.bind(this, 0, 1)} className={this.classHandler(0, 1)}>
-                           {this.props.positions[0][1]}
-                         </div>
-                       </td>
-                       <td className="text-center">
-                         <div onClick={this.clickHandler.bind(this, 0, 2)} onMouseOver={this.hoverHandler.bind(this, 0, 2)} className={this.classHandler(0, 2)}>
-                           {this.props.positions[0][2]}
-                         </div>
-                       </td>
-                     <tr>
-                       <td className="text-center">
-                         <div onClick={this.clickHandler.bind(this, 1, 0)} onMouseOver={this.hoverHandler.bind(this, 1, 0)} className={this.classHandler(1, 0)}>
-                           {this.props.positions[1][0]}
-                         </div>
-                       </td>
-                       <td className="text-center">
-                         <div onClick={this.clickHandler.bind(this, 1, 1)} onMouseOver={this.hoverHandler.bind(this, 1, 1)} className={this.classHandler(1, 1)}>
-                           {this.props.positions[1][1]}
-                         </div>
-                       </td>
-                       <td className="text-center">
-                         <div onClick={this.clickHandler.bind(this, 1, 2)} onMouseOver={this.hoverHandler.bind(this, 1, 2)} className={this.classHandler(1, 2)}>
-                           {this.props.positions[1][2]}
-                         </div>
-                       </td>
-                     </tr>
-                     <tr>
-                       <td className="text-center">
-                         <div onClick={this.clickHandler.bind(this, 2, 0)} onMouseOver={this.hoverHandler.bind(this, 2, 0)} className={this.classHandler(2, 0)}>
-                           {this.props.positions[2][0]}
-                         </div>
-                       </td>
-                       <td className="text-center">
-                         <div onClick={this.clickHandler.bind(this, 2, 1)} onMouseOver={this.hoverHandler.bind(this, 2, 1)} className={this.classHandler(2, 1)}>
-                           {this.props.positions[2][1]}
-                         </div>
-                       </td>
-                       <td className="text-center">
-                         <div onClick={this.clickHandler.bind(this, 2, 2)} onMouseOver={this.hoverHandler.bind(this, 2, 2)} className={this.classHandler(2, 2)}>
-                           {this.props.positions[2][2]}
-                         </div>
-                       </td>
-                     </tr>
+                     {generateRows(this, this.props.positions)}
                    </tbody>
                  </table>
                </div>
