@@ -9,7 +9,8 @@ object Board {
 
 case class Move(val row: Int, val col: Int)
 case class GameMove(val row: Int, val col: Int, val gameId: Int)
-case class BoardData(val positions: Array[Array[String]], val gameId: Int)
+case class BoardData(val positions: Array[Array[String]], val gameId: Int, val playerMark: String,
+  val opponentMark: String)
 
 case class Board(
   val settings: GameSettings,
@@ -28,7 +29,7 @@ case class Board(
     currentState.draw()
 
   def toData: BoardData =
-    BoardData(currentState.positions, settings.gameId)
+    BoardData(currentState.positions, settings.gameId, currentState.player.getMark, currentState.opponentPlayer.getMark)
 
   def addMove(move: Move): Board = {
     if (isEnded()) this

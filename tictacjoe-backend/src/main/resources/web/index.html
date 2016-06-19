@@ -80,7 +80,7 @@
      var GameSettingsThirdStep = React.createClass({
          clickHandler : function(whoStarts) {
            var onSuccess = function(result) {
-             ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} />, document.getElementById("game-container"));
+           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} playerMark={result.playerMark} opponentMark={result.opponentMark} />, document.getElementById("game-container"));
            };
 
            var onError = function(jqXHR, textStatus, errorThrown) {
@@ -119,16 +119,51 @@
        }
      });
 
+           /* var BoardColumns = React.createClass({
+           *   render: function() {
+           *     var row = this.props.row;
+
+           *     {this.props.columns.map(function(col) {
+           *       return  <td className="text-center">
+             *                 <div onClick={this.clickHandler.bind(this, 0, 0)} onMouseOver={this.hoverHandler.bind(this, 0, 0)} className={this.classHandler(0, 0)}>
+             *           {this.props.positions[0][0]}
+             *         </div>
+             *       </td>
+
+           *     })}
+           * });*/
+           
     var NewGame = React.createClass({
 
-       clickHandler : function() {
+       isPositionAvailable : function(row, col) {
+         return this.props.playerMark !== this.props.positions[row][col] &&
+                this.props.opponentMark !== this.props.positions[row][col];
+       },
+
+       classHandler : function(row, col) {
+          if (this.props.positions[row][col] === this.props.opponentMark) return "piece piece-opponent";
+          else if (this.props.positions[row][col] === this.props.playerMark) return "piece piece-player";
+          else return "piece piece-free";
+       },
+
+       hoverHandler : function(row, col) {
+         if (this.isPositionAvailable(row, col)) $("#r" + row + "-c" + col + " div").text(this.props.playerMark);
+       },
+
+       clickHandler : function(row, col) {
+         if (!this.isPositionAvailable(row, col)) return false;
+
          var onSuccess = function(result) {
-           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} />, document.getElementById("game-container"));
+           console.log(result);
+           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} playerMark={result.playerMark} opponentMark={result.opponentMark} />,
+                           document.getElementById("game-container"));
          };
 
          var onError = function(jqXHR, textStatus, errorThrown) {
            alert(textStatus);
          };
+
+         var formdata = {"row":row, "col":col, "gameId":this.props.gameId};
 
          $.get({url: "http://localhost:8080/game/move", data: formdata, dataType: "json"})
           .done(onSuccess)
@@ -142,20 +177,65 @@
                <div className="col-xs-4 col-xs-offset-4">
                  <table id="board">
                    <tbody>
-                     <tr id="row0">
-                       <td id="r0-c0" className="text-center"><div className="piece">{this.props.positions[0][0]}</div></td>
-                       <td id="r0-c1" className="text-center"><div className="piece">{this.props.positions[0][1]}</div></td>
-                       <td id="r0-c2" className="text-center"><div className="piece">{this.props.positions[0][2]}</div></td>
+                     {this.props.positions.map(function(row) {
+                       return <tr>
+                                {this.props.positions[row].map(function(col) {
+                                  return <td className="text-center">
+                                           <div onClick={this.clickHandler.bind(this, row, col)} onMouseOver={this.hoverHandler.bind(this, row, col)} className={this.classHandler(row, col)}>
+                                             {this.props.positions[0][0]}
+                                           </div>
+                                         </td>;
+                                })}
+                              </tr>;
+                     })}
+                       <td className="text-center">
+                         <div onClick={this.clickHandler.bind(this, 0, 0)} onMouseOver={this.hoverHandler.bind(this, 0, 0)} className={this.classHandler(0, 0)}>
+                           {this.props.positions[0][0]}
+                         </div>
+                       </td>
+                       <td className="text-center">
+                         <div onClick={this.clickHandler.bind(this, 0, 1)} onMouseOver={this.hoverHandler.bind(this, 0, 1)} className={this.classHandler(0, 1)}>
+                           {this.props.positions[0][1]}
+                         </div>
+                       </td>
+                       <td className="text-center">
+                         <div onClick={this.clickHandler.bind(this, 0, 2)} onMouseOver={this.hoverHandler.bind(this, 0, 2)} className={this.classHandler(0, 2)}>
+                           {this.props.positions[0][2]}
+                         </div>
+                       </td>
+                     <tr>
+                       <td className="text-center">
+                         <div onClick={this.clickHandler.bind(this, 1, 0)} onMouseOver={this.hoverHandler.bind(this, 1, 0)} className={this.classHandler(1, 0)}>
+                           {this.props.positions[1][0]}
+                         </div>
+                       </td>
+                       <td className="text-center">
+                         <div onClick={this.clickHandler.bind(this, 1, 1)} onMouseOver={this.hoverHandler.bind(this, 1, 1)} className={this.classHandler(1, 1)}>
+                           {this.props.positions[1][1]}
+                         </div>
+                       </td>
+                       <td className="text-center">
+                         <div onClick={this.clickHandler.bind(this, 1, 2)} onMouseOver={this.hoverHandler.bind(this, 1, 2)} className={this.classHandler(1, 2)}>
+                           {this.props.positions[1][2]}
+                         </div>
+                       </td>
                      </tr>
-                     <tr id="row1 text-center">
-                       <td id="r1-c0" className="text-center"><div className="piece">{this.props.positions[1][0]}</div></td>
-                       <td id="r1-c1" className="text-center"><div className="piece">{this.props.positions[1][1]}</div></td>
-                       <td id="r1-c2" className="text-center"><div className="piece">{this.props.positions[1][2]}</div></td>
-                     </tr>
-                     <tr id="row2 text-center">
-                       <td id="r2-c0" className="text-center"><div className="piece">{this.props.positions[2][0]}</div></td>
-                       <td id="r2-c1" className="text-center"><div className="piece">{this.props.positions[2][1]}</div></td>
-                       <td id="r2-c2" className="text-center"><div className="piece">{this.props.positions[2][2]}</div></td>
+                     <tr>
+                       <td className="text-center">
+                         <div onClick={this.clickHandler.bind(this, 2, 0)} onMouseOver={this.hoverHandler.bind(this, 2, 0)} className={this.classHandler(2, 0)}>
+                           {this.props.positions[2][0]}
+                         </div>
+                       </td>
+                       <td className="text-center">
+                         <div onClick={this.clickHandler.bind(this, 2, 1)} onMouseOver={this.hoverHandler.bind(this, 2, 1)} className={this.classHandler(2, 1)}>
+                           {this.props.positions[2][1]}
+                         </div>
+                       </td>
+                       <td className="text-center">
+                         <div onClick={this.clickHandler.bind(this, 2, 2)} onMouseOver={this.hoverHandler.bind(this, 2, 2)} className={this.classHandler(2, 2)}>
+                           {this.props.positions[2][2]}
+                         </div>
+                       </td>
                      </tr>
                    </tbody>
                  </table>

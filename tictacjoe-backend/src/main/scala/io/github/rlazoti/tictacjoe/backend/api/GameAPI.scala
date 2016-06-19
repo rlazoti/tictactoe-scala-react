@@ -12,7 +12,7 @@ import spray.json._
 
 class GameAPI(implicit val executionContext: ExecutionContext) extends DefaultJsonProtocol {
 
-  protected implicit val BoardDataFormat = jsonFormat2(BoardData)
+  protected implicit val BoardDataFormat = jsonFormat4(BoardData)
 
   private val service = new GameService()
   private val allowedCorsVerbs = List(GET)

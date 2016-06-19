@@ -18,17 +18,32 @@ table#board td {
 table#board td::after {
   content: '';
   display: block;
-  margin-top: 100%;
 }
 
 table#board td .piece {
   width: 100%;
   height: 100%;
   position: relative;
+  font-size: 5em;
+  background-color: white;
+  color: white;
+  cursor: pointer;
 }
 
-table#board td .piece:hover {
-  background-color: red;
+table#board td .piece-free {
+  color: white;
+}
+
+table#board td .piece-free:hover {
+  color: #1b809e;
+}
+
+table#board td .piece-player {
+  color: #1b809e;
+}
+
+table#board td .piece-opponent {
+  color: #5cb85c;
 }
 
 table#board td:first-of-type {
