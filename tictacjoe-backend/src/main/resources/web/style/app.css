@@ -68,3 +68,6 @@ table#board tr:nth-of-type(3) td {
   padding-top: 20px;
   padding-bottom: 20px;
 }
+
+.player-icon {
+}

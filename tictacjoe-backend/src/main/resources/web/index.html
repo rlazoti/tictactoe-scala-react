@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="style/app.css">
     <title>Bootstrap 101 Template</title>
   </head>
   <body>
-    <div class="container">
+    <div class="container-fluid">
       <div class="row row-title">
         <div class="col-xs-12 text-center">
           <h1 class="text-primary">Tic Tac Joe</h1>
@@ -193,12 +194,18 @@
          return (
            <div className="row">
              <div className="row">
-               <div className="col-xs-4 col-xs-offset-4">
+               <div className="col-xs-4 text-center">
+                 <i className="fa fa-laptop fa-5x" aria-hidden="true"></i>
+               </div>
+               <div className="col-xs-4">
                  <table id="board">
                    <tbody>
                      {generateRows(this, this.props.positions)}
                    </tbody>
                  </table>
+               </div>
+               <div className="col-xs-4 text-center player-icon">
+                 <i className="fa fa-user fa-5x" aria-hidden="true"></i>
                </div>
              </div>
            </div>
