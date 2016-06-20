@@ -6,7 +6,7 @@ object App extends App {
 
   val currentBoardId = 1
   val settings = GameSettings(currentBoardId, Easy())
-  val currentBoard = Board.newGame(settings, User(MarkX()), Computer(MarkO()))
+  val currentBoard = Board.newGame(settings, User(MarkX()), Computer(MarkO()), "You")
   var boards = List(currentBoard)
 
   val moves = List(

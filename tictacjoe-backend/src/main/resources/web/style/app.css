@@ -38,11 +38,11 @@ table#board td .piece-free:hover {
   color: #1b809e;
 }
 
-table#board td .piece-player {
+table#board td .piece-user {
   color: #1b809e;
 }
 
-table#board td .piece-opponent {
+table#board td .piece-computer {
   color: #5cb85c;
 }
 

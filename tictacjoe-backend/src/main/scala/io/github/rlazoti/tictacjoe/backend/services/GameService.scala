@@ -18,7 +18,7 @@ class GameService(implicit val executionContext: ExecutionContext) {
     for {
       settings <- createSettings(newGameData)
       (player, opponent) <- createGamePlayers(newGameData)
-      board <- generateNewBoard(settings, player, opponent)
+      board <- generateNewBoard(settings, player, opponent, newGameData.whoStarts)
     } yield board
 
   private def assignMove(board: Board, playersMove: GameMove): Future[Board] =
@@ -33,9 +33,10 @@ class GameService(implicit val executionContext: ExecutionContext) {
       newBoard
     }
 
-  private def generateNewBoard(settings: GameSettings, player: Player, opponentPlayer: Player): Future[Board] =
+  private def generateNewBoard(settings: GameSettings, player: Player, opponentPlayer: Player,
+      whoStarts: String): Future[Board] =
     Future {
-      val newBoard = Board.newGame(settings, player, opponentPlayer)
+      val newBoard = Board.newGame(settings, player, opponentPlayer, whoStarts)
       boards = boards :+ newBoard
       newBoard
     }

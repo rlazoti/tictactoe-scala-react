@@ -81,7 +81,7 @@
      var GameSettingsThirdStep = React.createClass({
          clickHandler : function(whoStarts) {
            var onSuccess = function(result) {
-           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} playerMark={result.playerMark} opponentMark={result.opponentMark} />, document.getElementById("game-container"));
+           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} playerMark={result.userMark} opponentMark={result.computerMark} />, document.getElementById("game-container"));
            };
 
            var onError = function(jqXHR, textStatus, errorThrown) {
@@ -120,21 +120,7 @@
        }
      });
 
-           /* var BoardColumns = React.createClass({
-           *   render: function() {
-           *     var row = this.props.row;
-
-           *     {this.props.columns.map(function(col) {
-           *       return  <td className="text-center">
-             *                 <div onClick={this.clickHandler.bind(this, 0, 0)} onMouseOver={this.hoverHandler.bind(this, 0, 0)} className={this.classHandler(0, 0)}>
-             *           {this.props.positions[0][0]}
-             *         </div>
-             *       </td>
-
-           *     })}
-           * });*/
-           
-    var NewGame = React.createClass({
+     var NewGame = React.createClass({
 
        isPositionAvailable : function(row, col) {
          return this.props.playerMark !== this.props.positions[row][col] &&
@@ -142,8 +128,8 @@
        },
 
        classHandler : function(row, col) {
-          if (this.props.positions[row][col] === this.props.opponentMark) return "piece piece-opponent";
-          else if (this.props.positions[row][col] === this.props.playerMark) return "piece piece-player";
+          if (this.props.positions[row][col] === this.props.opponentMark) return "piece piece-computer";
+          else if (this.props.positions[row][col] === this.props.playerMark) return "piece piece-user";
           else return "piece piece-free";
        },
 
@@ -155,9 +141,7 @@
          if (!this.isPositionAvailable(row, col)) return false;
 
          var onSuccess = function(result) {
-           console.log(result);
-           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} playerMark={result.playerMark} opponentMark={result.opponentMark} />,
-                           document.getElementById("game-container"));
+           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} playerMark={result.userMark} opponentMark={result.computerMark} />, document.getElementById("game-container"));
          };
 
          var onError = function(jqXHR, textStatus, errorThrown) {

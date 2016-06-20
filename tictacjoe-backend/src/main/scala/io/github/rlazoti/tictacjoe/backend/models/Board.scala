@@ -2,18 +2,22 @@ package io.github.rlazoti.tictacjoe.backend.models
 
 object Board {
 
-  def newGame(settings: GameSettings, player: Player, opponentPlayer: Player) =
-    Board(settings, InitialBoardState(settings, player, opponentPlayer))
+  def newGame(settings: GameSettings, user: Player, computer: Player, whoStarts: String): Board =
+    whoStarts match {
+      case "You" => Board(settings, user, InitialBoardState(settings, computer, user))
+      case _ => Board(settings, user, InitialBoardState(settings, user, computer)).generateOpponentMove()
+    }
 
 }
 
 case class Move(val row: Int, val col: Int)
 case class GameMove(val row: Int, val col: Int, val gameId: Int)
-case class BoardData(val positions: Array[Array[String]], val gameId: Int, val playerMark: String,
-  val opponentMark: String)
+case class BoardData(val positions: Array[Array[String]], val gameId: Int, val userMark: String,
+  val computerMark: String)
 
 case class Board(
   val settings: GameSettings,
+  val userPlayer: Player,
   val currentState: BoardState) {
 
   private def isEnded() =
@@ -28,18 +32,35 @@ case class Board(
   private def draw() =
     currentState.draw()
 
-  def toData: BoardData =
-    BoardData(currentState.positions, settings.gameId, currentState.player.getMark, currentState.opponentPlayer.getMark)
-
-  def addMove(move: Move): Board = {
+  private def generateOpponentMove() =
     if (isEnded()) this
     else {
-      val board = Board(settings, NextBoardState(currentState, move))
-      println(s"next move => ${board.currentState.player.name} marks ${move}")
-      board.printCurrentState()
-      board
+      settings.level.gameAI.generateMove(this) match {
+        case Some(move) => {
+          val board = Board(settings, userPlayer, NextBoardState(currentState, move))
+          println(s"${board.currentState.player.name} marks ${move}")
+          board.printCurrentState()
+          board
+        }
+        case None => this
+      }
     }
+
+  def toData: BoardData = {
+    val (userMark, computerMark) =
+      if (userPlayer.equals(currentState.player)) (currentState.player.getMark, currentState.opponentPlayer.getMark)
+      else (currentState.opponentPlayer.getMark, currentState.player.getMark)
+
+      BoardData(currentState.positions, settings.gameId, userMark, computerMark)
   }
+
+  def addMove(move: Move): Board =
+    if (isEnded()) this
+    else {
+      val board = Board(settings, userPlayer, NextBoardState(currentState, move))
+      println(s"${board.currentState.player.name} marks piece ${move}")
+      board.generateOpponentMove()
+    }
 
   def printCurrentState() = {
     val message =
