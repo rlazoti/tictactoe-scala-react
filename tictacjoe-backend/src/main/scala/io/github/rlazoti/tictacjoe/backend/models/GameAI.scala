@@ -10,12 +10,12 @@ case class EasyGameAI() extends GameAI {
 
   def generateMove(board: Board): Option[Move] =
     preferredMoves
-      .find {
-        case (row, col) => board.currentState.positions(row)(col) == board.settings.emptyPositionValue
+      .find { case (row, col) =>
+        board.currentState.positions(row)(col) == board.settings.emptyPositionValue
       }
       match {
         case Some((row, col)) => Some(Move(row, col))
-        case None => None
+        case _ => None
       }
 
 }

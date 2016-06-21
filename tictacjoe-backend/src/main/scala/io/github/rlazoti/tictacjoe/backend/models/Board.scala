@@ -2,18 +2,20 @@ package io.github.rlazoti.tictacjoe.backend.models
 
 object Board {
 
+  def buildGame(settings: GameSettings, user: Player, computer: Player, positions: Array[Array[String]]): Board =
+    Board(settings, user, CurrentBoardState(settings, computer, user, positions))
+
   def newGame(settings: GameSettings, user: Player, computer: Player, whoStarts: String): Board =
     whoStarts match {
-      case "You" => Board(settings, user, InitialBoardState(settings, computer, user))
+      case "user" | "user" => Board(settings, user, InitialBoardState(settings, computer, user))
       case _ => Board(settings, user, InitialBoardState(settings, user, computer)).generateOpponentMove()
     }
 
 }
 
 case class Move(val row: Int, val col: Int)
-case class GameMove(val row: Int, val col: Int, val gameId: Int)
-case class BoardData(val positions: Array[Array[String]], val gameId: Int, val userMark: String,
-  val computerMark: String)
+case class BoardData(val level: String, val userMark: String, val positions: Array[Array[String]])
+case class GameMove(val row: Int, val col: Int, val board: BoardData)
 
 case class Board(
   val settings: GameSettings,
@@ -47,11 +49,11 @@ case class Board(
     }
 
   def toData: BoardData = {
-    val (userMark, computerMark) =
-      if (userPlayer.equals(currentState.player)) (currentState.player.getMark, currentState.opponentPlayer.getMark)
-      else (currentState.opponentPlayer.getMark, currentState.player.getMark)
+    val userMark =
+      if (userPlayer.equals(currentState.player)) currentState.player.getMark
+      else currentState.opponentPlayer.getMark
 
-      BoardData(currentState.positions, settings.gameId, userMark, computerMark)
+      BoardData(settings.level.name, userMark, currentState.positions)
   }
 
   def addMove(move: Move): Board =
@@ -71,7 +73,6 @@ case class Board(
 
     println(s"""
       #=============== Board =================
-      #id: ${settings.gameId}
       #status: ${message}
       #blanks: ${currentState.blanks}
       #positions:

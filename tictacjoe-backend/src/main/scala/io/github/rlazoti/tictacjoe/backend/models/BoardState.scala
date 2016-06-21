@@ -1,27 +1,37 @@
 package io.github.rlazoti.tictacjoe.backend.models
 
-trait BoardState {
+sealed trait BoardState {
 
-  def blanks: Int
   def settings: GameSettings
   def player: Player
   def opponentPlayer: Player
   def positions: Array[Array[String]]
 
-  def over() =
+  def blanks(): Int =
+    positions.flatten.count { value =>
+      value.equals(settings.emptyPositionValue)
+    }
+
+  def over(): Boolean =
     won(player) || won(opponentPlayer) || draw()
 
-  def draw() =
+  def draw(): Boolean =
     !won(player) && !won(opponentPlayer) && blanks == 0
 
-  def won(somePlayer: Player) =
+  def won(somePlayer: Player): Boolean =
     winningCol(somePlayer) ||
     winningRow(somePlayer) ||
     winningDiagonal(somePlayer) ||
     winningReverseDiagonal(somePlayer)
 
+  protected def validatePlayers() =
+    if (player.getMark == opponentPlayer.getMark)
+      throw new IllegalArgumentException("Both player and opponent cannot use the same mark")
+
   private def checkValues(somePlayer: Player, values: Array[String]) =
-    values.foldLeft(true) { (acc, value) => acc && value == somePlayer.getMark }
+    values.foldLeft(true) { (acc, value) =>
+      acc && value == somePlayer.getMark
+    }
 
   private def winningDiagonal(somePlayer: Player) = {
     val values =
@@ -62,11 +72,15 @@ trait BoardState {
 case class InitialBoardState(val settings: GameSettings, val player: Player, val opponentPlayer: Player)
     extends BoardState {
 
-  if (player.getMark == opponentPlayer.getMark)
-    throw new IllegalArgumentException("Both player and opponent cannot use the same mark")
+  validatePlayers()
 
-  val blanks = settings.boardWidth * settings.boardWidth
   val positions = Array.fill(settings.boardWidth, settings.boardWidth)(settings.emptyPositionValue)
+}
+
+case class CurrentBoardState(val settings: GameSettings, val player: Player, val opponentPlayer: Player,
+  val positions: Array[Array[String]]) extends BoardState {
+
+  validatePlayers()
 }
 
 case class NextBoardState(currentState: BoardState, opponentsMove: Move) extends BoardState {
@@ -74,7 +88,6 @@ case class NextBoardState(currentState: BoardState, opponentsMove: Move) extends
   if (currentState.over())
     throw new UnsupportedOperationException(s"No one can perform a new move ater the end of game.")
 
-  val blanks = currentState.blanks - 1
   val settings = currentState.settings
   val player = currentState.opponentPlayer
   val opponentPlayer = currentState.player

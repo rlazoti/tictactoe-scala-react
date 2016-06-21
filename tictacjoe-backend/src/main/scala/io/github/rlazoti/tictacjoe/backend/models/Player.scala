@@ -39,6 +39,6 @@ case class Computer(mark: Mark) extends Player {
 }
 
 case class User(mark: Mark) extends Player {
-  val name = "You"
+  val name = "User"
   val getMark = mark.get
 }
