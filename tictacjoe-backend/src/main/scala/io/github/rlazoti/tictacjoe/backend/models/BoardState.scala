@@ -1,7 +1,6 @@
 package io.github.rlazoti.tictacjoe.backend.models
 
 sealed trait BoardState {
-
   def settings: GameSettings
   def player: Player
   def opponentPlayer: Player
@@ -16,7 +15,7 @@ sealed trait BoardState {
     won(player) || won(opponentPlayer) || draw()
 
   def draw(): Boolean =
-    !won(player) && !won(opponentPlayer) && blanks == 0
+    !won(player) && !won(opponentPlayer) && blanks() == 0
 
   def won(somePlayer: Player): Boolean =
     winningCol(somePlayer) ||
@@ -66,7 +65,6 @@ sealed trait BoardState {
       .map { row => checkValues(somePlayer, row) }
       .count { result => result == true } > 0
   }
-
 }
 
 case class InitialBoardState(val settings: GameSettings, val player: Player, val opponentPlayer: Player)
@@ -101,5 +99,4 @@ case class NextBoardState(currentState: BoardState, opponentsMove: Move) extends
     newPositions(move.row)(move.col) = opponent.getMark
     newPositions
   }
-
 }

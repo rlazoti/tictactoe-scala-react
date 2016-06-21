@@ -28,7 +28,7 @@ class GameService(implicit val executionContext: ExecutionContext) {
     Future { board.addMove(Move(playersMove.row, playersMove.col)) }
 
   private def generateCurrentBoard(settings: GameSettings, player: Player, opponentPlayer: Player,
-    positions: Array[Array[String]]): Future[Board] =
+      positions: Array[Array[String]]): Future[Board] =
     Future { Board.buildGame(settings, player, opponentPlayer, positions) }
 
   private def generateNewBoard(settings: GameSettings, player: Player, opponentPlayer: Player,

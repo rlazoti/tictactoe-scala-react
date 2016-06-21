@@ -4,7 +4,7 @@ import org.scalatest._
 
 class BoardStateSpec extends FunSuite with Matchers {
 
-  private implicit val settings = GameSettings(1, Easy())
+  private implicit val settings = GameSettings(Easy("easy"))
   private val emptyRow = Array(settings.emptyPositionValue, settings.emptyPositionValue, settings.emptyPositionValue)
   private val opponent = Computer(MarkO())
   private val user = User(MarkX())
@@ -32,10 +32,10 @@ class BoardStateSpec extends FunSuite with Matchers {
 
   test("Board's initial state should not accept that user and opponent use the same mark") {
     an [IllegalArgumentException] should be thrownBy
-    InitialBoardState(settings, User("Test 1", MarkX()), Computer(MarkX()))
+    InitialBoardState(settings, User(MarkX()), Computer(MarkX()))
 
     an [IllegalArgumentException] should be thrownBy
-    InitialBoardState(settings, User("Test 2", MarkO()), Computer(MarkO()))
+    InitialBoardState(settings, User(MarkO()), Computer(MarkO()))
   }
 
   test("An opponent's move should be registered into a new Board's state") {

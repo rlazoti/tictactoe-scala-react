@@ -1,7 +1,6 @@
 package io.github.rlazoti.tictacjoe.backend.models
 
 object Mark {
-
   def getByType(markType: String): Mark =
     markType match {
       case "X" | "x" => MarkX()
@@ -13,7 +12,6 @@ object Mark {
       case MarkX() => MarkO()
       case _ => MarkX()
     }
-
 }
 
 trait Mark {
