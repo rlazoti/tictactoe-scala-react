@@ -27,7 +27,10 @@
     <script type="text/babel">
      var GameSettingsFirstStep = React.createClass({
        clickHandler : function(level) {
-         ReactDOM.render(<GameSettingsSecondStep level={level} />, document.getElementById("game-container"));
+         ReactDOM.render(
+           <GameSettingsSecondStep level={level} />,
+           document.getElementById("game-container")
+         );
        },
 
        render : function() {
@@ -41,9 +44,15 @@
              <div className="row">
                <div className="col-xs-12 text-center">
                  <div className="btn-group btn-group-lg" role="group" aria-label="...">
-                   <button type="button" className="btn btn-default" onClick={this.clickHandler.bind(this, "easy")}>Piece of Cake</button>
-                   <button type="button" className="btn btn-warning" onClick={this.clickHandler.bind(this, "normal")}>Normal</button>
-                   <button type="button" className="btn btn-danger" onClick={this.clickHandler.bind(this, "hard")}>Impossible</button>
+                   <button type="button" className="btn btn-default" onClick={this.clickHandler.bind(this, "easy")}>
+                     Piece of Cake
+                   </button>
+                   <button type="button" className="btn btn-warning" onClick={this.clickHandler.bind(this, "normal")}>
+                     Normal
+                   </button>
+                   <button type="button" className="btn btn-danger" onClick={this.clickHandler.bind(this, "hard")}>
+                     Impossible
+                   </button>
                  </div>
                </div>
              </div>
@@ -54,7 +63,10 @@
 
      var GameSettingsSecondStep = React.createClass({
        clickHandler : function(mark) {
-         ReactDOM.render(<GameSettingsThirdStep level={this.props.level} playerMark={mark} />, document.getElementById("game-container"));
+         ReactDOM.render(
+           <GameSettingsThirdStep level={this.props.level} playerMark={mark} />,
+           document.getElementById("game-container")
+         );
        },
 
        render : function() {
@@ -68,8 +80,12 @@
              <div className="row">
                <div className="col-xs-12 text-center">
                  <div className="btn-group btn-group-lg" role="group" aria-label="...">
-                   <button type="button" className="btn btn-success" onClick={this.clickHandler.bind(this, "O")}>&nbsp;&nbsp;O&nbsp;&nbsp;</button>
-                   <button type="button" className="btn btn-primary" onClick={this.clickHandler.bind(this, "X")}>&nbsp;&nbsp;X&nbsp;&nbsp;</button>
+                   <button type="button" className="btn btn-success" onClick={this.clickHandler.bind(this, "O")}>
+                     &nbsp;&nbsp;O&nbsp;&nbsp;
+                   </button>
+                   <button type="button" className="btn btn-primary" onClick={this.clickHandler.bind(this, "X")}>
+                     &nbsp;&nbsp;X&nbsp;&nbsp;
+                   </button>
                  </div>
                </div>
              </div>
@@ -79,24 +95,27 @@
      });
 
      var GameSettingsThirdStep = React.createClass({
-         clickHandler : function(whoStarts) {
-           var onSuccess = function(result) {
-           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} playerMark={result.userMark} opponentMark={result.computerMark} />, document.getElementById("game-container"));
-           };
+       clickHandler : function(whoStarts) {
+         var onSuccess = function(result) {
+           ReactDOM.render(
+             <NewGame gameData={result} />,
+             document.getElementById("game-container")
+           );
+         };
 
-           var onError = function(jqXHR, textStatus, errorThrown) {
-             console.log(jqXHR);
-           };
+         var onError = function(jqXHR, textStatus, errorThrown) {
+           console.log(jqXHR);
+         };
 
-           var formdata = {
-             "level" : this.props.level,
-             "playerMark" : this.props.playerMark,
-             "whoStarts" : whoStarts
-           };
+         var formdata = {
+           "level" : this.props.level,
+           "playerMark" : this.props.playerMark,
+           "whoStarts" : whoStarts
+         };
 
-           $.get({url: "http://localhost:8080/game/new", data: formdata, dataType: "json"})
-            .done(onSuccess)
-            .fail(onError);
+         $.get({url: "http://localhost:8080/game/new", data: formdata, dataType: "json"})
+          .done(onSuccess)
+          .fail(onError);
        },
 
        render : function() {
@@ -110,8 +129,12 @@
              <div className="row">
                <div className="col-xs-12 text-center">
                  <div className="btn-group btn-group-lg" role="group" aria-label="...">
-                   <button type="button" className="btn btn-success" onClick={this.clickHandler.bind(this, "Computer")}>Computer.</button>
-                   <button type="button" className="btn btn-primary" onClick={this.clickHandler.bind(this, "You")}>I'll Start!</button>
+                   <button type="button" className="btn btn-success" onClick={this.clickHandler.bind(this, "Computer")}>
+                     Computer.
+                   </button>
+                   <button type="button" className="btn btn-primary" onClick={this.clickHandler.bind(this, "You")}>
+                     I'll Start!
+                   </button>
                  </div>
                </div>
              </div>
@@ -121,34 +144,41 @@
      });
 
      var NewGame = React.createClass({
-
        isPositionAvailable : function(row, col) {
-         return this.props.playerMark !== this.props.positions[row][col] &&
-                this.props.opponentMark !== this.props.positions[row][col];
+         return this.props.gameData.userMark !== this.props.gameData.positions[row][col] &&
+                this.props.gameData.computerMark !== this.props.gameData.positions[row][col];
        },
 
        classHandler : function(row, col) {
-          if (this.props.positions[row][col] === this.props.opponentMark) return "piece piece-computer";
-          else if (this.props.positions[row][col] === this.props.playerMark) return "piece piece-user";
-          else return "piece piece-free";
+         if (this.props.gameData.positions[row][col] === this.props.gameData.computerMark)
+           return "piece piece-computer";
+
+         else if (this.props.gameData.positions[row][col] === this.props.gameData.userMark)
+           return "piece piece-user";
+
+         else return "piece piece-free";
        },
 
        hoverHandler : function(row, col) {
-         if (this.isPositionAvailable(row, col)) $("#r" + row + "-c" + col + " div").text(this.props.playerMark);
+         if (this.isPositionAvailable(row, col))
+           $("#r" + row + "-c" + col + " div").text(this.props.gameData.userMark);
        },
 
        clickHandler : function(row, col) {
          if (!this.isPositionAvailable(row, col)) return false;
 
          var onSuccess = function(result) {
-           ReactDOM.render(<NewGame gameId={result.gameId} positions={result.positions} playerMark={result.userMark} opponentMark={result.computerMark} />, document.getElementById("game-container"));
+           ReactDOM.render(
+             <NewGame gameData={result} />,
+             document.getElementById("game-container")
+           );
          };
 
          var onError = function(jqXHR, textStatus, errorThrown) {
            alert(textStatus);
          };
 
-         var formdata = {"row":row, "col":col, "gameId":this.props.gameId};
+         var formdata = {"row":row, "col":col, "gameId":this.props.gameData.gameId};
 
          $.get({url: "http://localhost:8080/game/move", data: formdata, dataType: "json"})
           .done(onSuccess)
@@ -156,13 +186,15 @@
        },
 
        render : function() {
-
          var generateColumn = function(that, positions, row) {
            return positions.map(function(value, col) {
              var id = "r" + row + "-c" + col;
 
              return <td key={"r" + id} className="text-center">
-               <div id={id} key={"d" + id} onClick={that.clickHandler.bind(that, row, col)} onMouseOver={that.hoverHandler.bind(that, row, col)} className={that.classHandler(row, col)}>
+               <div id={id} key={"d" + id}
+                    onClick={that.clickHandler.bind(that, row, col)}
+                    onMouseOver={that.hoverHandler.bind(that, row, col)}
+                    className={that.classHandler(row, col)}>
                  {value}
                </div>
              </td>;
@@ -184,7 +216,7 @@
                <div className="col-xs-4">
                  <table id="board">
                    <tbody>
-                     {generateRows(this, this.props.positions)}
+                     {generateRows(this, this.props.gameData.positions)}
                    </tbody>
                  </table>
                </div>
@@ -197,7 +229,10 @@
        }
      });
 
-     ReactDOM.render(<GameSettingsFirstStep />, document.getElementById("game-container"));
+     ReactDOM.render(
+       <GameSettingsFirstStep />,
+       document.getElementById("game-container")
+     );
     </script>
   </body>
 </html>
