@@ -27,15 +27,15 @@ class GameAPI(implicit val executionContext: ExecutionContext) extends DefaultJs
     respondWithHeader(`Access-Control-Allow-Credentials`(true))
 
   val routes =
-    (enableCORS & pathPrefix("game")) {
-      (path("new") & get & parameters("level", "playerMark", "whoStarts").as(NewGame)) { newGame =>
+    pathPrefix("web") {
+      getFromResourceDirectory("web")
+    } ~
+    (pathPrefix("game") & get & enableCORS) {
+      (path("new") & parameters("level", "playerMark", "whoStarts").as(NewGame)) { newGame =>
         complete(service.createNewGame(newGame).map { board => board.toData.toJson })
       } ~
-      (path("move") & get & parameters("row".as[Int], "col".as[Int], "gameId".as[Int]).as(GameMove)) { newMove =>
+      (path("move") & parameters("row".as[Int], "col".as[Int], "gameId".as[Int]).as(GameMove)) { newMove =>
         complete(service.addPlayersMove(newMove).map { board => board.toData.toJson })
       }
-    } ~
-    (path("web") & get & entity(as[HttpRequest])) { request =>
-      getFromResourceDirectory("web")
     }
 }
