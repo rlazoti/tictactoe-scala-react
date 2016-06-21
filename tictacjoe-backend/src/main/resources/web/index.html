@@ -113,7 +113,14 @@
            "whoStarts" : whoStarts
          };
 
-         $.get({url: "http://localhost:8080/game/new", data: formdata, dataType: "json"})
+         $.ajax({
+           type: 'POST',
+           url: '/game/new',
+           dataType: 'json',
+           contentType: "application/json",
+           data: JSON.stringify(formdata),
+           beforeSend: function() {}
+         })
           .done(onSuccess)
           .fail(onError);
        },
@@ -156,16 +163,21 @@
          else if (this.props.gameData.positions[row][col] === this.props.gameData.userMark)
            return "piece piece-user";
 
-         else return "piece piece-free";
+         else if (this.props.gameData.status === "active")
+           return "piece piece-free";
+
+         else return "piece";
        },
 
        hoverHandler : function(row, col) {
-         if (this.isPositionAvailable(row, col))
-           $("#r" + row + "-c" + col + " div").text(this.props.gameData.userMark);
+           if (this.isPositionAvailable(row, col)) {
+             $("#r" + row + "-c" + col).text(this.props.gameData.userMark);
+           }
        },
 
        clickHandler : function(row, col) {
          if (!this.isPositionAvailable(row, col)) return false;
+         else if (this.props.gameData.status !== "active") return false;
 
          var onSuccess = function(result) {
            ReactDOM.render(
@@ -178,9 +190,26 @@
            alert(textStatus);
          };
 
-         var formdata = {"row":row, "col":col, "gameId":this.props.gameData.gameId};
+         var formdata = {
+           "row":row,
+           "col":col,
+           "board": {
+             "level": this.props.gameData.level,
+             "userMark": this.props.gameData.userMark,
+             "computerMark": this.props.gameData.computerMark,
+             "positions": this.props.gameData.positions,
+             "status": this.props.gameData.status
+           }
+        };
 
-         $.get({url: "http://localhost:8080/game/move", data: formdata, dataType: "json"})
+         $.ajax({
+           type: 'POST',
+           url: '/game/move',
+           dataType: 'json',
+           contentType: "application/json",
+           data: JSON.stringify(formdata),
+           beforeSend: function() {}
+         })
           .done(onSuccess)
           .fail(onError);
        },
@@ -207,6 +236,9 @@
            });
          };
 
+         if (this.props.gameData.status === "user-won") alert("You WIN! :)");
+         else if (this.props.gameData.status === "computer-won") alert("YOU LOSE! :(");
+         else if (this.props.gameData.status === "draw") alert("It's a draw! :/");
          return (
            <div className="row">
              <div className="row">

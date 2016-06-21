@@ -11,7 +11,9 @@ import spray.json._
 
 class GameAPI(implicit val executionContext: ExecutionContext) extends DefaultJsonProtocol {
 
-  protected implicit val BoardDataFormat = jsonFormat3(BoardData)
+  protected implicit val BoardDataFormat = jsonFormat5(BoardData)
+  protected implicit val NewGameFormat = jsonFormat3(NewGame)
+  protected implicit val GameMoveFormat = jsonFormat3(GameMove)
 
   private val service = new GameService()
   private val allowedCorsVerbs = List(GET)
@@ -29,19 +31,12 @@ class GameAPI(implicit val executionContext: ExecutionContext) extends DefaultJs
     pathPrefix("app") {
       getFromResourceDirectory("web")
     } ~
-    (pathPrefix("game") & get & enableCORS) {
-      (path("new") & parameters("level", "playerMark", "whoStarts").as(NewGame)) { newGame =>
+    (pathPrefix("game") & post & enableCORS) {
+      (path("new") & entity(as[NewGame])) { newGame =>
         complete(service.createNewGame(newGame).map { board => board.toData.toJson })
+      } ~
+      (path("move") & entity(as[GameMove])) { newMove =>
+        complete(service.addPlayersMove(newMove).map { board => board.toData.toJson })
       }
-
-    //   (path("move") &
-    //    parameters("row".as[Int], "col".as[Int], "level".as[String], "usermark".as[String],
-    //               "positions".as[Array[Array[String]]])) { (row, col, level, userMark, positions) =>
-
-    //     val boardData = BoardData(level, userMark, positions)
-    //     val newMove = GameMove(row, col, boardData)
-    //     complete(service.addPlayersMove(newMove).map { board => board.toData.toJson })
-    //   }
-
     }
 }

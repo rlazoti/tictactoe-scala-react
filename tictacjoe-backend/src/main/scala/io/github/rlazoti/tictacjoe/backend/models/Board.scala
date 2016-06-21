@@ -7,14 +7,17 @@ object Board {
 
   def newGame(settings: GameSettings, user: Player, computer: Player, whoStarts: String): Board =
     whoStarts match {
-      case "user" | "user" => Board(settings, user, InitialBoardState(settings, computer, user))
+      case "user" | "User" => Board(settings, user, InitialBoardState(settings, computer, user))
       case _ => Board(settings, user, InitialBoardState(settings, user, computer)).generateOpponentMove()
     }
 
 }
 
 case class Move(val row: Int, val col: Int)
-case class BoardData(val level: String, val userMark: String, val positions: Array[Array[String]])
+
+case class BoardData(val level: String, val userMark: String, val computerMark: String,
+  val positions: Array[Array[String]], val status: String)
+
 case class GameMove(val row: Int, val col: Int, val board: BoardData)
 
 case class Board(
@@ -24,6 +27,13 @@ case class Board(
 
   private def isEnded() =
     currentState.over()
+
+  private def userWon() =
+    currentState.won(userPlayer)
+
+  private def computerWon() =
+    if (userPlayer.equals(currentState.player)) opponentWon()
+    else playerWon()
 
   private def playerWon() =
     currentState.won(currentState.player)
@@ -48,12 +58,18 @@ case class Board(
       }
     }
 
-  def toData: BoardData = {
-    val userMark =
-      if (userPlayer.equals(currentState.player)) currentState.player.getMark
-      else currentState.opponentPlayer.getMark
+  private def currentStatus() =
+    if (userWon()) "user-won"
+    else if (computerWon()) "computer-won"
+    else if (draw()) "draw"
+    else "active"
 
-      BoardData(settings.level.name, userMark, currentState.positions)
+  def toData: BoardData = {
+    val (userMark, computerMark) =
+      if (userPlayer.equals(currentState.player)) (currentState.player.getMark, currentState.opponentPlayer.getMark)
+      else (currentState.opponentPlayer.getMark, currentState.player.getMark)
+
+    BoardData(settings.level.name, userMark, computerMark, currentState.positions, currentStatus())
   }
 
   def addMove(move: Move): Board =
