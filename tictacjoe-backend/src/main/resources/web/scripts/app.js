@@ -129,6 +129,27 @@ var GameSettingsThirdStep = React.createClass({
 
 });
 
+var GameStatus = React.createClass({
+
+  statusHandler : function(status) {
+    if (status === "user-won") return "You WIN!";
+    else if (status === "computer-won") return "You LOSE! :(";
+    else if (status === "draw") return "It's a draw! :/";
+    else return "It's your turn...";
+  },
+
+  render : function() {
+    return (
+      <div className="row row-title">
+        <div className="col-xs-12 text-center">
+        <h3>{this.statusHandler(this.props.status)}</h3>
+        </div>
+      </div>
+    );
+  }
+
+});
+
 var NewGame = React.createClass({
 
   isPositionAvailable : function(row, col) {
@@ -216,19 +237,18 @@ var NewGame = React.createClass({
       });
     };
 
-    if (this.props.gameData.status === "user-won") alert("You WIN! :)");
-    else if (this.props.gameData.status === "computer-won") alert("YOU LOSE! :(");
-    else if (this.props.gameData.status === "draw") alert("It's a draw! :/");
-
     return (
       <div className="row">
-        <div className="col-xs-10 col-xs-offset-1 col-md-4 col-md-offset-4">
-          <table id="board">
-            <tbody>
-              {generateRows(this, this.props.gameData.positions)}
-            </tbody>
-          </table>
+        <div className="row">
+          <div className="col-xs-10 col-xs-offset-1 col-md-4 col-md-offset-4">
+            <table id="board">
+              <tbody>
+                {generateRows(this, this.props.gameData.positions)}
+              </tbody>
+            </table>
+          </div>
         </div>
+        <GameStatus status={this.props.gameData.status} />
       </div>
     );
   }

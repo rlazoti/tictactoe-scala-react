@@ -75,5 +75,27 @@ table#board tr:nth-of-type(3) td {
   padding-bottom: 20px;
 }
 
-.player-icon {
+.ribbon {
+    top: 3.2em;
+    right: -3.7em;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    transform: rotate(45deg);
+    color:#fff;
+    display: block;
+    padding: .6em 3.5em;
+    position: fixed;
+    text-align: center;
+    text-decoration: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
+.bg-red {
+    background-color: #ff4136;
 }

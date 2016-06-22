@@ -5,9 +5,10 @@ trait GameAI {
 }
 
 case class EasyGameAI() extends GameAI {
-  private val preferredMoves = List((1,1), (0,0), (0,2), (2,0), (2,2), (0,1), (1,0), (1,2), (2,1))
+  private val preferredMoves =
+    util.Random.shuffle(List((1,1), (0,0), (0,2), (2,0), (2,2), (0,1), (1,0), (1,2), (2,1))).toList
 
-  def generateMove(board: Board): Option[Move] =
+  def generateMove(board: Board): Option[Move] = 
     preferredMoves
       .find { case (row, col) =>
         board.currentState.positions(row)(col) == board.settings.emptyPositionValue
