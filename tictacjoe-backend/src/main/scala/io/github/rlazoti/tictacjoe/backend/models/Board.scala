@@ -23,13 +23,13 @@ case class Board(
   val userPlayer: Player,
   val currentState: BoardState) {
 
-  private def isEnded() =
+  private[models] def isEnded() =
     currentState.over()
 
-  private def userWon() =
+  private[models] def userWon() =
     currentState.won(userPlayer)
 
-  private def computerWon() =
+  private[models] def computerWon() =
     if (userPlayer.equals(currentState.player)) opponentWon()
     else playerWon()
 
