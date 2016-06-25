@@ -1,20 +1,23 @@
 package io.github.rlazoti.tictacjoe.backend.models
 
 sealed trait Difficulty {
-  def gameAI: GameAI
+  protected[this] def gameAI: GameAI
+
   def name: String
+  def generateMove(board: Board): Option[Move] =
+    gameAI.generateMove(board)
 }
 
 case class Easy(val name: String) extends Difficulty {
-  val gameAI = new EasyGameAI()
+  protected[this] val gameAI = new EasyGameAI()
 }
 
 case class Normal(val name: String) extends Difficulty {
-  val gameAI = new EasyGameAI()
+  protected[this] val gameAI = new EasyGameAI()
 }
 
 case class Hard(val name: String) extends Difficulty {
-  val gameAI = new EasyGameAI()
+  protected[this] val gameAI = new EasyGameAI()
 }
 
 case class NewGame(level: String, playerMark: String, whoStarts: String) {

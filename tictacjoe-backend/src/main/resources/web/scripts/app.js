@@ -1,8 +1,73 @@
+var Labels = function(language) {
+  var portuguese = "pt-br";
+
+  var gameName = language === portuguese ? "Jogo da Velha" : "Tic Tac Joe";
+  var difficulty = language === portuguese ? "Escolha a Dificuldade" : "Choose the Difficulty";
+  var easyMode = language === portuguese ? "Mamao com Acucar" : "Piece of Cake";
+  var normalMode = "Normal";
+  var hardMode = language === portuguese ? "Invencivel" : "Impossible";
+  var pieceType = language === portuguese ? "OK! Agora escolha a sua Peca" : "OK! Now choose your Piece";
+  var whoWillStart = language === portuguese ? "Otimo! Quem ira comecar?" : "Great! Who will Start?";
+  var computer = language === portuguese ? "Computador" : "Computer";
+  var iWillStart = language === portuguese ? "Eu comeco!" : "I'll Start!";
+  var youWin = language === portuguese ? "Voce Ganhou!" : "You WIN!";
+  var youLose = language === portuguese ? "Voce Perdeu!" : "UYou Lose!";
+  var draw = language === portuguese ? "Empatou!" : "It's a Draw!";
+  var yourTurn = language === portuguese ? "Sua vez de jogar..." : "It's your turn...";
+
+  return {
+    gameName: gameName,
+    difficulty: difficulty,
+    easy: easyMode,
+    normal: normalMode,
+    hard: hardMode,
+    pieceType: pieceType,
+    whoWillStart: whoWillStart,
+    computer: computer,
+    iWillStart: iWillStart,
+    youWin: youWin,
+    youLose: youLose,
+    draw: draw,
+    yourTurn: yourTurn
+  };
+
+};
+
+var GameLanguage = React.createClass({
+
+  clickHandler : function(language) {
+    var labels = new Labels(language);
+
+    ReactDOM.render(
+      <GameSettingsFirstStep labels={labels} />,
+      document.getElementById("game-container")
+    );
+  },
+
+  render : function() {
+    return (
+      <div className="row">
+        <div className="col-xs-12 text-center">
+          <div className="btn-group btn-group-lg" role="group" aria-label="...">
+            <button type="button" className="btn btn-default" onClick={this.clickHandler.bind(this, "pt-br")}>
+              Portugues
+            </button>
+            <button type="button" className="btn btn-warning" onClick={this.clickHandler.bind(this, "en")}>
+              English
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+});
+
 var GameSettingsFirstStep = React.createClass({
 
   clickHandler : function(level) {
     ReactDOM.render(
-      <GameSettingsSecondStep level={level} />,
+      <GameSettingsSecondStep labels={this.props.labels} level={level} />,
       document.getElementById("game-container")
     );
   },
@@ -12,20 +77,20 @@ var GameSettingsFirstStep = React.createClass({
       <div className="row">
         <div className="row row-title">
           <div className="col-xs-12 text-center">
-            <h2>Choose the Difficulty</h2>
+            <h2>{this.props.labels.difficulty}</h2>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12 text-center">
             <div className="btn-group btn-group-lg" role="group" aria-label="...">
               <button type="button" className="btn btn-default" onClick={this.clickHandler.bind(this, "easy")}>
-                Piece of Cake
+                {this.props.labels.easy}
               </button>
               <button type="button" className="btn btn-warning" onClick={this.clickHandler.bind(this, "normal")}>
-                Normal
+                {this.props.labels.normal}
               </button>
               <button type="button" className="btn btn-danger" onClick={this.clickHandler.bind(this, "hard")}>
-                Impossible
+                {this.props.labels.hard}
               </button>
             </div>
           </div>
@@ -40,7 +105,7 @@ var GameSettingsSecondStep = React.createClass({
 
   clickHandler : function(mark) {
     ReactDOM.render(
-      <GameSettingsThirdStep level={this.props.level} playerMark={mark} />,
+      <GameSettingsThirdStep labels={this.props.labels} level={this.props.level} playerMark={mark} />,
       document.getElementById("game-container")
     );
   },
@@ -50,7 +115,7 @@ var GameSettingsSecondStep = React.createClass({
       <div className="row">
         <div className="row row-title">
           <div className="col-xs-12 text-center">
-            <h2>OK! Now choose your Piece</h2>
+            <h2>{this.props.labels.pieceType}</h2>
           </div>
         </div>
         <div className="row">
@@ -76,7 +141,7 @@ var GameSettingsThirdStep = React.createClass({
   clickHandler : function(whoStarts) {
     var onSuccess = function(result) {
       ReactDOM.render(
-        <NewGame gameData={result} />,
+        <NewGame labels={this.props.labels} gameData={result} />,
         document.getElementById("game-container")
       );
     };
@@ -108,17 +173,17 @@ var GameSettingsThirdStep = React.createClass({
       <div className="row">
         <div className="row row-title">
           <div className="col-xs-12 text-center">
-            <h2>Great! Who will Start?</h2>
+            <h2>{this.props.labels.whoWillStart</h2>
           </div>
         </div>
         <div className="row">
           <div className="col-xs-12 text-center">
             <div className="btn-group btn-group-lg" role="group" aria-label="...">
               <button type="button" className="btn btn-success" onClick={this.clickHandler.bind(this, "Computer")}>
-                Computer.
+                {this.props.labels.computer}
               </button>
               <button type="button" className="btn btn-primary" onClick={this.clickHandler.bind(this, "User")}>
-                I'll Start!
+                {this.props.labels.iWillStart}
               </button>
             </div>
           </div>
@@ -132,10 +197,10 @@ var GameSettingsThirdStep = React.createClass({
 var GameStatus = React.createClass({
 
   statusHandler : function(status) {
-    if (status === "user-won") return "You WIN!";
-    else if (status === "computer-won") return "You LOSE! :(";
-    else if (status === "draw") return "It's a draw! :/";
-    else return "It's your turn...";
+    if (status === "user-won") return this.props.labels.youWin;
+    else if (status === "computer-won") return this.props.labels.youLose;
+    else if (status === "draw") return this.props.labels.draw;
+    else return this.props.labels.yourTurn;
   },
 
   render : function() {
@@ -182,7 +247,7 @@ var NewGame = React.createClass({
 
     var onSuccess = function(result) {
       ReactDOM.render(
-        <NewGame gameData={result} />,
+        <NewGame labels={this.props.labels} gameData={result} />,
         document.getElementById("game-container")
       );
     };
@@ -248,7 +313,7 @@ var NewGame = React.createClass({
             </table>
           </div>
         </div>
-        <GameStatus status={this.props.gameData.status} />
+        <GameStatus labels={this.props.labels} status={this.props.gameData.status} />
       </div>
     );
   }
@@ -257,7 +322,7 @@ var NewGame = React.createClass({
 
 $(function() {
   ReactDOM.render(
-      <GameSettingsFirstStep />,
+    <GameLanguage />,
     document.getElementById("game-container")
   );
 });

@@ -32,20 +32,31 @@ case class HardGameAI() extends GameAI {
     else if (board.computerWon()) depth - 10
     else 0
 
-  private def minimax(board: Board, depth: Int) = {
+  /*
+  private def minimax(board: Board, depth: Int): Board = {
     if (board.isEnded()) score(board, depth)
 
     val newDepth = depth + 1
-    var scores = List()
-    var moves = List()
 
-    // Populate the scores array, recursing as needed
-    game.get_available_moves.each do |move|
-        possible_game = game.get_new_state(move)
-        scores.push minimax(possible_game, depth)
-        moves.push move
-    end
+    val (scores, moves) = board.currentState.positions
+      .view
+      .zipWithIndex
+      .map { case (row, rowIndex) =>
+        row.view.zipWithIndex.map { case (value, colIndex) =>
+          (Move(rowIndex, colIndex), value)
+        }
+      }
+      .flatten
+      .filter { case (move, piece) => piece.equals(board.settings.emptyPositionValue) }
+      .map { case (move, piece) =>
+        (minimax(board.addMove(move), depth), move)
+      }
 
+      if (board.userPlayer.equals(board.currentState.player)) {
+      scores.
+      }
+
+    /*
     # Do the min or the max calculation
     if game.active_turn == @player
         # This is the max calculation
@@ -59,4 +70,9 @@ case class HardGameAI() extends GameAI {
         return scores[min_score_index]
     end
 end
+     */
+  }
+
+   */
+
 }

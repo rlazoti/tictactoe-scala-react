@@ -4,7 +4,7 @@ import org.scalatest._
 
 class BoardStateSpec extends FunSuite with Matchers {
 
-  private implicit val settings = GameSettings(Easy("easy"))
+  private val settings = GameSettings(Easy("easy"))
   private val emptyRow = Array(settings.emptyPositionValue, settings.emptyPositionValue, settings.emptyPositionValue)
   private val opponent = Computer(MarkO())
   private val user = User(MarkX())
@@ -12,7 +12,7 @@ class BoardStateSpec extends FunSuite with Matchers {
 
   test("All positions of Board's initial state should be blank") {
     initialBoardState.blanks should be (settings.boardWidth * settings.boardWidth)
-    initialBoardState.positions.map { row =>
+    initialBoardState.positions.foreach { row =>
       row should contain theSameElementsAs emptyRow
     }
   }

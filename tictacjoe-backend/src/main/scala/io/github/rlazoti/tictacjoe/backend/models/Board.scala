@@ -45,7 +45,7 @@ case class Board(
   private def generateOpponentMove() =
     if (isEnded()) this
     else {
-      settings.level.gameAI.generateMove(this) match {
+      settings.level.generateMove(this) match {
         case Some(move) => Board(settings, userPlayer, NextBoardState(currentState, move))
         case None => this
       }
