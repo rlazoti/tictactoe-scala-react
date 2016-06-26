@@ -48,7 +48,7 @@ class BoardSpec extends FunSuite with Matchers {
     boardData.level shouldBe settingsHardMode.level.name
   }
 
-  test("When user is who will start, new board's should contains a user's move and a computer's reply") {
+  test("When user is who will start, the new board should contain an user's move and a computer's reply") {
     val boardData = Board.newGame(settingsHardMode, user, opponent, "user").addMove(Move(0,0)).toData
 
     boardData.positions(0)(0) shouldBe user.getMark
@@ -57,7 +57,7 @@ class BoardSpec extends FunSuite with Matchers {
     boardData.positions.flatten.count(piece => settingsHardMode.emptyPositionValue.equals(piece)) shouldBe 7
   }
 
-  test("When computer is who will start, new board's should contains a computer's move") {
+  test("When computer is who will start, the new board should contain only a computer's move") {
     val boardData = Board.newGame(settingsHardMode, user, opponent, "computer").toData
 
     boardData.positions.flatten.count(piece => opponent.getMark.equals(piece)) shouldBe 1

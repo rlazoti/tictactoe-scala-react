@@ -14,7 +14,7 @@ class PlayerSpec extends FunSuite with Matchers {
     mark shouldBe MarkX()
   }
 
-  test("Any olther input different from 'x' and 'X' should be transformed in O Mark") {
+  test("Any olther input different from 'x' and 'X' should be transformed into O Mark") {
     Mark.getByType("a") shouldBe MarkO()
     Mark.getByType("B") shouldBe MarkO()
     Mark.getByType("123") shouldBe MarkO()
@@ -22,7 +22,7 @@ class PlayerSpec extends FunSuite with Matchers {
     Mark.getByType("") shouldBe MarkO()
   }
 
-  test("An opponent's mark should always be an opposite mark to the player's mark") {
+  test("An opponent's mark should always be the opposite mark to the player's mark") {
     Mark.getOpponentMark(Mark.getByType("x")) shouldBe MarkO()
     Mark.getOpponentMark(Mark.getByType("o")) shouldBe MarkX()
   }
