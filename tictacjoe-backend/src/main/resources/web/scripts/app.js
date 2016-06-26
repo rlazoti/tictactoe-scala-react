@@ -11,7 +11,7 @@ var Labels = function(language) {
   var computer = language === portuguese ? "Computador" : "Computer";
   var iWillStart = language === portuguese ? "Eu comeco!" : "I'll Start!";
   var youWin = language === portuguese ? "Voce Ganhou!" : "You WIN!";
-  var youLose = language === portuguese ? "Voce Perdeu!" : "UYou Lose!";
+  var youLose = language === portuguese ? "Voce Perdeu!" : "You Lose!";
   var draw = language === portuguese ? "Empatou!" : "It's a Draw!";
   var yourTurn = language === portuguese ? "Sua vez de jogar..." : "It's your turn...";
 
@@ -139,9 +139,11 @@ var GameSettingsSecondStep = React.createClass({
 var GameSettingsThirdStep = React.createClass({
 
   clickHandler : function(whoStarts) {
-    var onSuccess = function(result) {
+    var labels = this.props.labels;
+
+    var onSuccess = function(_result, _labels) {
       ReactDOM.render(
-        <NewGame labels={this.props.labels} gameData={result} />,
+        <NewGame labels={_labels} gameData={_result} />,
         document.getElementById("game-container")
       );
     };
@@ -164,7 +166,7 @@ var GameSettingsThirdStep = React.createClass({
       data: JSON.stringify(formdata),
       beforeSend: function() {}
     })
-      .done(onSuccess)
+      .done(function(data) { onSuccess(data, labels); })
       .fail(onError);
   },
 
@@ -173,7 +175,7 @@ var GameSettingsThirdStep = React.createClass({
       <div className="row">
         <div className="row row-title">
           <div className="col-xs-12 text-center">
-            <h2>{this.props.labels.whoWillStart</h2>
+            <h2>{this.props.labels.whoWillStart}</h2>
           </div>
         </div>
         <div className="row">
@@ -245,9 +247,11 @@ var NewGame = React.createClass({
     if (!this.isPositionAvailable(row, col)) return false;
     else if (this.props.gameData.status !== "active") return false;
 
-    var onSuccess = function(result) {
+    var labels = this.props.labels;
+
+    var onSuccess = function(_result, _labels) {
       ReactDOM.render(
-        <NewGame labels={this.props.labels} gameData={result} />,
+        <NewGame labels={_labels} gameData={_result} />,
         document.getElementById("game-container")
       );
     };
@@ -276,7 +280,7 @@ var NewGame = React.createClass({
       data: JSON.stringify(formdata),
       beforeSend: function() {}
     })
-      .done(onSuccess)
+      .done(function(data) { onSuccess(data, labels); })
       .fail(onError);
   },
 
