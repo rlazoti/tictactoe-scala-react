@@ -107,4 +107,58 @@ class BoardStateSpec extends FunSuite with Matchers {
     an [UnsupportedOperationException] should be thrownBy NextBoardState(ninthMoveState, Move(1, 1))
   }
 
+  test("A board with a player's horizontal line of the same piece should be defined as won") {
+    val firstMoveState = NextBoardState(initialBoardState, Move(1, 1))
+    val secondMoveState = NextBoardState(firstMoveState, Move(2, 2))
+    val thirdMoveState = NextBoardState(secondMoveState, Move(1, 0))
+    val fourthMoveState = NextBoardState(thirdMoveState, Move(2, 0))
+    val fifhtMoveState = NextBoardState(fourthMoveState, Move(1, 2))
+
+    fifhtMoveState.over() shouldBe true
+    fifhtMoveState.draw() shouldBe false
+    fifhtMoveState.won(user) shouldBe false
+    fifhtMoveState.won(opponent) shouldBe true
+  }
+
+  test("A board with a player's vertical line of the same piece should be defined as won") {
+    val firstMoveState = NextBoardState(initialBoardState, Move(1, 1))
+    val secondMoveState = NextBoardState(firstMoveState, Move(2, 2))
+    val thirdMoveState = NextBoardState(secondMoveState, Move(1, 0))
+    val fourthMoveState = NextBoardState(thirdMoveState, Move(1, 2))
+    val fifhtMoveState = NextBoardState(fourthMoveState, Move(0, 0))
+    val sixthMoveState = NextBoardState(fifhtMoveState, Move(0, 2))
+
+    sixthMoveState.over() shouldBe true
+    sixthMoveState.draw() shouldBe false
+    sixthMoveState.won(user) shouldBe true
+    sixthMoveState.won(opponent) shouldBe false
+  }
+
+  test("A board with a player's diagonal line of the same piece should be defined as won") {
+    val firstMoveState = NextBoardState(initialBoardState, Move(0, 0))
+    val secondMoveState = NextBoardState(firstMoveState, Move(2, 1))
+    val thirdMoveState = NextBoardState(secondMoveState, Move(1, 1))
+    val fourthMoveState = NextBoardState(thirdMoveState, Move(1, 2))
+    val fifhtMoveState = NextBoardState(fourthMoveState, Move(2, 2))
+
+    fifhtMoveState.over() shouldBe true
+    fifhtMoveState.draw() shouldBe false
+    fifhtMoveState.won(user) shouldBe false
+    fifhtMoveState.won(opponent) shouldBe true
+  }
+
+  test("A board with a player's reverse diagonal line of the same piece should be defined as won") {
+    val firstMoveState = NextBoardState(initialBoardState, Move(0, 0))
+    val secondMoveState = NextBoardState(firstMoveState, Move(0, 2))
+    val thirdMoveState = NextBoardState(secondMoveState, Move(1, 2))
+    val fourthMoveState = NextBoardState(thirdMoveState, Move(1, 1))
+    val fifhtMoveState = NextBoardState(fourthMoveState, Move(2, 2))
+    val sixthMoveState = NextBoardState(fifhtMoveState, Move(2, 0))
+
+    sixthMoveState.over() shouldBe true
+    sixthMoveState.draw() shouldBe false
+    sixthMoveState.won(user) shouldBe true
+    sixthMoveState.won(opponent) shouldBe false
+  }
+
 }
