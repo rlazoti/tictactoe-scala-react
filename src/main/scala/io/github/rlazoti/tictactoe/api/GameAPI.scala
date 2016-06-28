@@ -1,7 +1,7 @@
-package io.github.rlazoti.tictacjoe.backend.api
+package io.github.rlazoti.tictactoe.api
 
-import io.github.rlazoti.tictacjoe.backend.models.{ BoardData, GameMove, NewGame }
-import io.github.rlazoti.tictacjoe.backend.services.GameService
+import io.github.rlazoti.tictactoe.models.{ BoardData, GameMove, NewGame }
+import io.github.rlazoti.tictactoe.services.GameService
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
 import akka.http.scaladsl.server.Directives._
 import scala.concurrent.ExecutionContext

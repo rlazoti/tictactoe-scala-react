@@ -1,7 +1,7 @@
 var Labels = function(language) {
   var portuguese = "pt-br";
 
-  var gameName = language === portuguese ? "Jogo da Velha" : "Tic Tac Joe";
+  var gameName = language === portuguese ? "Jogo da Velha" : "Tic Tac Toe";
   var difficulty = language === portuguese ? "Escolha a Dificuldade" : "Choose the Difficulty";
   var easyMode = language === portuguese ? "Mamao com Acucar" : "Piece of Cake";
   var normalMode = "Normal";

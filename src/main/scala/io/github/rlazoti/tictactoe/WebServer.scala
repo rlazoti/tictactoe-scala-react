@@ -1,8 +1,8 @@
-package io.github.rlazoti.tictacjoe.backend
+package io.github.rlazoti.tictactoe
 
 import akka.http.scaladsl.Http
-import io.github.rlazoti.tictacjoe.backend.api.GameAPI
-import io.github.rlazoti.tictacjoe.backend.utils.AppContextProvider
+import io.github.rlazoti.tictactoe.api.GameAPI
+import io.github.rlazoti.tictactoe.utils.AppContextProvider
 import scala.io.StdIn
 
 object WebServer extends App with AppContextProvider {

@@ -1,4 +1,4 @@
-package io.github.rlazoti.tictacjoe.backend.models
+package io.github.rlazoti.tictactoe.models
 
 sealed trait BoardState {
   def settings: GameSettings

@@ -1,4 +1,4 @@
-package io.github.rlazoti.tictacjoe.backend.models
+package io.github.rlazoti.tictactoe.models
 
 object Board {
   def buildGame(settings: GameSettings, user: Player, computer: Player, positions: Array[Array[String]]): Board =

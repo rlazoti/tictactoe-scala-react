@@ -1,6 +1,6 @@
-package io.github.rlazoti.tictacjoe.backend.services
+package io.github.rlazoti.tictactoe.services
 
-import io.github.rlazoti.tictacjoe.backend.models._
+import io.github.rlazoti.tictactoe.models._
 import scala.concurrent.{ ExecutionContext, Future }
 
 class GameService(implicit val executionContext: ExecutionContext) {
