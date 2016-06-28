@@ -24,55 +24,77 @@ case class EasyGameAI() extends GameAI {
 case class HardGameAI() extends GameAI {
 
   def generateMove(board: Board): Option[Move] = {
-    None
+    val (_, bestMove) = minimax(board, 2, None, Int.MinValue, Int.MaxValue)
+    bestMove
   }
 
-  private def score(board: Board, depth: Int) =
-    if (board.userWon()) 10 - depth
-    else if (board.computerWon()) depth - 10
-    else 0
+  private def minimax(board: Board, depth: Int, move: Option[Move], alpha: Int, beta: Int): (Int, Option[Move]) = {
+    var score: Int = 0
+    var currentBeta = beta
+    var currentAlpha = alpha
+    var bestMove: Option[Move] = move
 
-  /*
-  private def minimax(board: Board, depth: Int): Board = {
-    if (board.isEnded()) score(board, depth)
+    if (board.isEnded() || depth == 0) (evaluate(board), bestMove)
 
-    val newDepth = depth + 1
+    else {
+      board.availablePositions().foreach { move =>
+        if (currentAlpha < currentBeta) {
+          val newBoard = Board(board.settings, board.userPlayer, NextBoardState(board.currentState, move))
+          score = minimax(newBoard, depth -1, Some(move), currentAlpha, currentBeta)._1
 
-    val (scores, moves) = board.currentState.positions
-      .view
-      .zipWithIndex
-      .map { case (row, rowIndex) =>
-        row.view.zipWithIndex.map { case (value, colIndex) =>
-          (Move(rowIndex, colIndex), value)
+          if (board.currentState.opponentPlayer == board.computerPlayer) {
+            if (score > currentAlpha) {
+              currentAlpha = score
+              bestMove = newBoard.currentState.lastMove
+            }
+          }
+
+          else if (score < currentBeta) {
+            currentBeta = score
+            bestMove = newBoard.currentState.lastMove
+          }
         }
       }
-      .flatten
-      .filter { case (move, piece) => piece.equals(board.settings.emptyPositionValue) }
-      .map { case (move, piece) =>
-        (minimax(board.addMove(move), depth), move)
-      }
 
-      if (board.userPlayer.equals(board.currentState.player)) {
-      scores.
-      }
-
-    /*
-    # Do the min or the max calculation
-    if game.active_turn == @player
-        # This is the max calculation
-        max_score_index = scores.each_with_index.max[1]
-        @choice = moves[max_score_index]
-        return scores[max_score_index]
-    else
-        # This is the min calculation
-        min_score_index = scores.each_with_index.min[1]
-        @choice = moves[min_score_index]
-        return scores[min_score_index]
-    end
-end
-     */
+      (if (board.currentState.opponentPlayer == board.computerPlayer) currentAlpha else currentBeta, bestMove)
+    }
   }
 
-   */
+  private def evaluate(board: Board): Int =
+    List(
+      (0, 0, 0, 1, 0, 2), // row 0
+      (1, 0, 1, 1, 1, 2), // row 1
+      (2, 0, 2, 1, 2, 2), // row 2
+      (0, 0, 1, 0, 2, 0), // col 0
+      (0, 1, 1, 1, 2, 1), // col 1
+      (0, 2, 1, 2, 2, 2), // col 2
+      (0, 0, 1, 1, 2, 2), // diagonal
+      (0, 2, 1, 1, 2, 0)  // reverse diagonal
+    ).map { case (r1, c1, r2, c2, r3, c3) => evaluateLine(board, r1, c1, r2, c2, r3, c3) }
+     .sum
+
+  private def evaluateLine(board: Board, row1: Int, col1: Int, row2: Int, col2: Int, row3: Int, col3: Int): Int = {
+    val score1 =
+      if (board.currentState.positions(row1)(col1).equals(board.computerPlayer.getMark)) 1
+      else if (board.currentState.positions(row1)(col1).equals(board.userPlayer.getMark)) -1
+      else 0
+
+    val score2 =
+      if (board.currentState.positions(row2)(col2).equals(board.computerPlayer.getMark)) {
+        if (score1 == 1) 10 else if (score1 == -1) 0 else 1
+      }
+      else if (board.currentState.positions(row2)(col2).equals(board.userPlayer.getMark)) {
+        if (score1 == -1) -10 else if (score1 == 1) 0 else -1
+      }
+      else score1
+
+    if (board.currentState.positions(row3)(col3).equals(board.computerPlayer.getMark)) {
+      if (score2 > 0) score2 * 10 else if (score2 < 0) 0 else 1
+    }
+    else if (board.currentState.positions(row3)(col3).equals(board.userPlayer.getMark)) {
+      if (score2 < 0) score2 * 10 else if (score2 > 1) 0 else -1
+    }
+    else score2
+  }
 
 }

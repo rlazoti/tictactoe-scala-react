@@ -11,6 +11,10 @@ object AppBuilder extends Build {
     scalaVersion := "2.11.8",
     scalacOptions := Seq("-deprecation", "-feature", "-unchecked", "-language:postfixOps"),
 
+    fork in run := false,
+    fork in Test := true,
+    parallelExecution in Test := false,
+
     unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)(Seq(_)),
     unmanagedSourceDirectories in Test    <<= (scalaSource in Test)(Seq(_))
   )

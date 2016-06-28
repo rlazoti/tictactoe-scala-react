@@ -5,6 +5,7 @@ sealed trait BoardState {
   def player: Player
   def opponentPlayer: Player
   def positions: Array[Array[String]]
+  def lastMove: Option[Move]
 
   def blanks(): Int =
     positions.flatten.count { value =>
@@ -72,12 +73,14 @@ case class InitialBoardState(val settings: GameSettings, val player: Player, val
 
   validatePlayers()
 
+  val lastMove = None
   val positions = Array.fill(settings.boardWidth, settings.boardWidth)(settings.emptyPositionValue)
 }
 
 case class CurrentBoardState(val settings: GameSettings, val player: Player, val opponentPlayer: Player,
   val positions: Array[Array[String]]) extends BoardState {
 
+  val lastMove = None
   validatePlayers()
 }
 
@@ -90,6 +93,7 @@ case class NextBoardState(currentState: BoardState, opponentsMove: Move) extends
   val player = currentState.opponentPlayer
   val opponentPlayer = currentState.player
   val positions = applyOpponentsMove(opponentsMove, currentState.opponentPlayer)
+  val lastMove = Some(opponentsMove)
 
   private def applyOpponentsMove(move: Move, opponent: Player) = {
     if (!currentState.positions(move.row)(move.col).equals(settings.emptyPositionValue))
@@ -99,4 +103,5 @@ case class NextBoardState(currentState: BoardState, opponentsMove: Move) extends
     newPositions(move.row)(move.col) = opponent.getMark
     newPositions
   }
+
 }

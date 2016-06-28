@@ -17,7 +17,7 @@ case class Normal(val name: String) extends Difficulty {
 }
 
 case class Hard(val name: String) extends Difficulty {
-  protected[this] val gameAI = new EasyGameAI()
+  protected[this] val gameAI = new HardGameAI()
 }
 
 case class NewGame(level: String, playerMark: String, whoStarts: String) {

@@ -51,11 +51,26 @@ case class Board(
       }
     }
 
-  private def currentStatus() =
+  private[models] def currentStatus() =
     if (userWon()) "user-won"
     else if (computerWon()) "computer-won"
     else if (draw()) "draw"
     else "active"
+
+  private[models] def availablePositions(): Seq[Move] =
+    currentState.positions
+      .view
+      .zipWithIndex
+      .map { case (row, rowIndex) =>
+        row.view.zipWithIndex.map { case (value, colIndex) => (Move(rowIndex, colIndex), value) }
+      }
+      .flatten
+      .filter { case (move, piece) => piece.equals(settings.emptyPositionValue) }
+      .map { case (move, piece) => move }
+
+  private[models] def computerPlayer: Player =
+    if (userPlayer.equals(currentState.player)) currentState.opponentPlayer
+    else currentState.player
 
   def toData: BoardData = {
     val (userMark, computerMark) =
