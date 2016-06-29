@@ -26,12 +26,12 @@ sealed trait BoardState {
     winningReverseDiagonal(somePlayer)
 
   protected def validatePlayers() =
-    if (player.getMark == opponentPlayer.getMark)
-      throw new IllegalArgumentException("Both player and opponent cannot use the same mark")
+    if (player.getPiece == opponentPlayer.getPiece)
+      throw new IllegalArgumentException("Both player and opponent cannot use the same piece")
 
   private def checkValues(somePlayer: Player, values: Array[String]) =
     values.foldLeft(true) { (acc, value) =>
-      acc && value == somePlayer.getMark
+      acc && value == somePlayer.getPiece
     }
 
   private def winningDiagonal(somePlayer: Player) = {
@@ -101,10 +101,10 @@ case class NextBoardState(currentState: BoardState, opponentsMove: Move) extends
 
   private def applyOpponentsMove(move: Move, opponent: Player) = {
     if (!currentState.positions(move.row)(move.col).equals(settings.emptyPositionValue))
-      throw new UnsupportedOperationException("It's not valid to mark an already marked position.")
+      throw new UnsupportedOperationException("It's not valid to put a piece on an already used position.")
 
     val newPositions = currentState.positions.map { values => values.map(identity) }
-    newPositions(move.row)(move.col) = opponent.getMark
+    newPositions(move.row)(move.col) = opponent.getPiece
     newPositions
   }
 

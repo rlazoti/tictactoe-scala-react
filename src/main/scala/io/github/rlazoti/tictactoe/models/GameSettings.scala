@@ -20,7 +20,7 @@ case class Hard(val name: String) extends Difficulty {
   protected[this] val gameAI = new HardGameAI()
 }
 
-case class NewGame(level: String, playerMark: String, whoStarts: String) {
+case class NewGame(level: String, playerPiece: String, whoStarts: String) {
   def getLevel(): Difficulty =
     level match {
       case "normal" => Normal(level)

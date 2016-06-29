@@ -7,7 +7,7 @@ class GameService(implicit val executionContext: ExecutionContext) {
 
   def addPlayersMove(playersMove: GameMove): Future[Board] =
     for {
-      gameData <- createGameData(playersMove.board.level, playersMove.board.userMark)
+      gameData <- createGameData(playersMove.board.level, playersMove.board.userPiece)
       settings <- createSettings(gameData)
       (player, opponent) <- createGamePlayers(gameData)
       board <- generateCurrentBoard(settings, player, opponent, playersMove.board.positions)
@@ -21,8 +21,8 @@ class GameService(implicit val executionContext: ExecutionContext) {
       board <- generateNewBoard(settings, player, opponent, newGameData.whoStarts)
     } yield board
 
-  private def createGameData(level: String, userMark: String): Future[NewGame] =
-    Future { NewGame(level, userMark, "") }
+  private def createGameData(level: String, userPiece: String): Future[NewGame] =
+    Future { NewGame(level, userPiece, "") }
 
   private def assignMove(board: Board, playersMove: GameMove): Future[Board] =
     Future { board.addMove(Move(playersMove.row, playersMove.col)) }
@@ -38,17 +38,16 @@ class GameService(implicit val executionContext: ExecutionContext) {
   private def createSettings(newGameData: NewGame): Future[GameSettings] =
     Future { GameSettings(newGameData.getLevel()) }
 
-  private def createPlayersMarks(newGameData: NewGame): Future[(Mark, Mark)] =
+  private def createPlayersPieces(newGameData: NewGame): Future[(Piece, Piece)] =
     Future {
-      val playerMark = Mark.getByType(newGameData.playerMark)
-      val opponentMark = Mark.getOpponentMark(playerMark)
-      (playerMark, opponentMark)
+      val playerPiece = Piece.getByType(newGameData.playerPiece)
+      val opponentPiece = Piece.getOpponentPiece(playerPiece)
+      (playerPiece, opponentPiece)
     }
 
   private def createGamePlayers(newGameData: NewGame): Future[(Player, Player)] =
-    createPlayersMarks(newGameData).map {
-      case (playerMark, opponentMark) =>
-        (User(playerMark), Computer(opponentMark))
+    createPlayersPieces(newGameData).map {
+      case (playerPiece, opponentPiece) => (User(playerPiece), Computer(opponentPiece))
     }
 
 }

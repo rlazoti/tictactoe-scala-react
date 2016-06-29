@@ -8,8 +8,8 @@ class BoardSpec extends FunSuite with Matchers {
   private val settingsNormalMode = GameSettings(Normal("normal"))
   private val settingsHardMode = GameSettings(Hard("hard"))
 
-  private val opponent = Computer(MarkO())
-  private val user = User(MarkX())
+  private val opponent = Computer(Nought())
+  private val user = User(Cross())
 
   private val emptyRow = Array(
     settingsEasyMode.emptyPositionValue,
@@ -26,8 +26,8 @@ class BoardSpec extends FunSuite with Matchers {
     val boardData = Board.newGame(settingsEasyMode, user, opponent, "user").toData
 
     boardData.status shouldBe "active"
-    boardData.userMark shouldBe user.getMark
-    boardData.computerMark shouldBe opponent.getMark
+    boardData.userPiece shouldBe user.getPiece
+    boardData.computerPiece shouldBe opponent.getPiece
     boardData.positions.foreach { row =>
       row should contain theSameElementsAs emptyRow
     }
@@ -51,17 +51,17 @@ class BoardSpec extends FunSuite with Matchers {
   test("When user is who will start, the new board should contain an user's move and a computer's reply") {
     val boardData = Board.newGame(settingsEasyMode, user, opponent, "user").addMove(Move(0,0)).toData
 
-    boardData.positions(0)(0) shouldBe user.getMark
-    boardData.positions.flatten.count(piece => opponent.getMark.equals(piece)) shouldBe 1
-    boardData.positions.flatten.count(piece => user.getMark.equals(piece)) shouldBe 1
+    boardData.positions(0)(0) shouldBe user.getPiece
+    boardData.positions.flatten.count(piece => opponent.getPiece.equals(piece)) shouldBe 1
+    boardData.positions.flatten.count(piece => user.getPiece.equals(piece)) shouldBe 1
     boardData.positions.flatten.count(piece => settingsHardMode.emptyPositionValue.equals(piece)) shouldBe 7
   }
 
   test("When computer is who will start, the new board should contain only a computer's move") {
     val boardData = Board.newGame(settingsEasyMode, user, opponent, "computer").toData
 
-    boardData.positions.flatten.count(piece => opponent.getMark.equals(piece)) shouldBe 1
-    boardData.positions.flatten.count(piece => user.getMark.equals(piece)) shouldBe 0
+    boardData.positions.flatten.count(piece => opponent.getPiece.equals(piece)) shouldBe 1
+    boardData.positions.flatten.count(piece => user.getPiece.equals(piece)) shouldBe 0
     boardData.positions.flatten.count(piece => settingsHardMode.emptyPositionValue.equals(piece)) shouldBe 8
   }
 

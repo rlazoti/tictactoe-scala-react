@@ -9,7 +9,7 @@ var GameLanguage = React.createClass({
     );
 
     ReactDOM.render(
-      <GameSettingsFirstStep labels={labels} />,
+      <GameSettingsDifficulty labels={labels} />,
       document.getElementById("game-container")
     );
   },
@@ -37,11 +37,11 @@ var GameTitle = React.createClass({
   }
 });
 
-var GameSettingsFirstStep = React.createClass({
+var GameSettingsDifficulty = React.createClass({
 
   clickHandler : function(level) {
     ReactDOM.render(
-      <GameSettingsSecondStep labels={this.props.labels} level={level} />,
+      <GameSettingsPlayersPiece labels={this.props.labels} level={level} />,
       document.getElementById("game-container")
     );
   },
@@ -73,11 +73,11 @@ var GameSettingsFirstStep = React.createClass({
 
 });
 
-var GameSettingsSecondStep = React.createClass({
+var GameSettingsPlayersPiece = React.createClass({
 
-  clickHandler : function(mark) {
+  clickHandler : function(piece) {
     ReactDOM.render(
-      <GameSettingsThirdStep labels={this.props.labels} level={this.props.level} playerMark={mark} />,
+      <GameSettingsWhoWillStart labels={this.props.labels} level={this.props.level} playerPiece={piece} />,
       document.getElementById("game-container")
     );
   },
@@ -106,7 +106,7 @@ var GameSettingsSecondStep = React.createClass({
 
 });
 
-var GameSettingsThirdStep = React.createClass({
+var GameSettingsWhoWillStart = React.createClass({
 
   clickHandler : function(whoStarts) {
     var labels = this.props.labels;
@@ -124,7 +124,7 @@ var GameSettingsThirdStep = React.createClass({
 
     var formdata = {
       "level" : this.props.level,
-      "playerMark" : this.props.playerMark,
+      "playerPiece" : this.props.playerPiece,
       "whoStarts" : whoStarts
     };
 
@@ -180,15 +180,15 @@ var NewGame = React.createClass({
   },
 
   isPositionAvailable : function(row, col) {
-    return this.props.gameData.userMark !== this.props.gameData.positions[row][col] &&
-           this.props.gameData.computerMark !== this.props.gameData.positions[row][col];
+    return this.props.gameData.userPiece !== this.props.gameData.positions[row][col] &&
+           this.props.gameData.computerPiece !== this.props.gameData.positions[row][col];
   },
 
   classHandler : function(context, row, col) {
-    if (context.props.gameData.positions[row][col] === context.props.gameData.computerMark)
+    if (context.props.gameData.positions[row][col] === context.props.gameData.computerPiece)
       return "piece piece-computer";
 
-    else if (context.props.gameData.positions[row][col] === context.props.gameData.userMark)
+    else if (context.props.gameData.positions[row][col] === context.props.gameData.userPiece)
       return "piece piece-user";
 
     else if (context.props.gameData.status === "active")
@@ -212,7 +212,7 @@ var NewGame = React.createClass({
 
   enterHandler : function(row, col) {
     if (this.props.gameData.status === "active" && this.isPositionAvailable(row, col))
-      $("#r" + row + "-c" + col).text(this.props.gameData.userMark).addClass("piece-free-hover");
+      $("#r" + row + "-c" + col).text(this.props.gameData.userPiece).addClass("piece-free-hover");
   },
 
   clickHandler : function(row, col) {
@@ -251,8 +251,8 @@ var NewGame = React.createClass({
       "col":col,
       "board": {
          "level": this.props.gameData.level,
-         "userMark": this.props.gameData.userMark,
-         "computerMark": this.props.gameData.computerMark,
+         "userPiece": this.props.gameData.userPiece,
+         "computerPiece": this.props.gameData.computerPiece,
          "positions": this.props.gameData.positions,
          "status": this.props.gameData.status
       }
@@ -312,7 +312,6 @@ var NewGame = React.createClass({
   }
 
 });
-
 
 $(function() {
   ReactDOM.render(

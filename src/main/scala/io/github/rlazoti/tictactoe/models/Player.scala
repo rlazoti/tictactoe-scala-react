@@ -1,42 +1,42 @@
 package io.github.rlazoti.tictactoe.models
 
-object Mark {
-  def getByType(markType: String): Mark =
-    markType match {
-      case "X" | "x" => MarkX()
-      case _ => MarkO()
+object Piece {
+  def getByType(pieceType: String): Piece =
+    pieceType match {
+      case "X" | "x" => Cross()
+      case _ => Nought()
     }
 
-  def getOpponentMark(playerMark: Mark) =
-    playerMark match {
-      case MarkX() => MarkO()
-      case _ => MarkX()
+  def getOpponentPiece(playerPiece: Piece) =
+    playerPiece match {
+      case Cross() => Nought()
+      case _ => Cross()
     }
 }
 
-sealed trait Mark {
+sealed trait Piece {
   def get: String
 }
 
-case class MarkX() extends Mark {
+case class Cross() extends Piece {
   val get = "X"
 }
 
-case class MarkO() extends Mark {
+case class Nought() extends Piece {
   val get = "O"
 }
 
 sealed trait Player {
   def name: String
-  def getMark: String
+  def getPiece: String
 }
 
-case class Computer(mark: Mark) extends Player {
+case class Computer(piece: Piece) extends Player {
   val name = "Computer"
-  val getMark = mark.get
+  val getPiece = piece.get
 }
 
-case class User(mark: Mark) extends Player {
+case class User(piece: Piece) extends Player {
   val name = "User"
-  val getMark = mark.get
+  val getPiece = piece.get
 }

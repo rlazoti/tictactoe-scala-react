@@ -88,23 +88,23 @@ case class HardGameAI() extends GameAI {
 
   private def evaluateLine(board: Board, row1: Int, col1: Int, row2: Int, col2: Int, row3: Int, col3: Int): Int = {
     val score1 =
-      if (board.currentState.positions(row1)(col1).equals(board.computerPlayer.getMark)) 1
-      else if (board.currentState.positions(row1)(col1).equals(board.userPlayer.getMark)) -1
+      if (board.currentState.positions(row1)(col1).equals(board.computerPlayer.getPiece)) 1
+      else if (board.currentState.positions(row1)(col1).equals(board.userPlayer.getPiece)) -1
       else 0
 
     val score2 =
-      if (board.currentState.positions(row2)(col2).equals(board.computerPlayer.getMark)) {
+      if (board.currentState.positions(row2)(col2).equals(board.computerPlayer.getPiece)) {
         if (score1 == 1) 10 else if (score1 == -1) 0 else 1
       }
-      else if (board.currentState.positions(row2)(col2).equals(board.userPlayer.getMark)) {
+      else if (board.currentState.positions(row2)(col2).equals(board.userPlayer.getPiece)) {
         if (score1 == -1) -10 else if (score1 == 1) 0 else -1
       }
       else score1
 
-    if (board.currentState.positions(row3)(col3).equals(board.computerPlayer.getMark)) {
+    if (board.currentState.positions(row3)(col3).equals(board.computerPlayer.getPiece)) {
       if (score2 > 0) score2 * 10 else if (score2 < 0) 0 else 1
     }
-    else if (board.currentState.positions(row3)(col3).equals(board.userPlayer.getMark)) {
+    else if (board.currentState.positions(row3)(col3).equals(board.userPlayer.getPiece)) {
       if (score2 < 0) score2 * 10 else if (score2 > 1) 0 else -1
     }
     else score2
