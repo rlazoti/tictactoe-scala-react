@@ -1,46 +1,3 @@
-var Labels = function(language) {
-  var portuguese = "pt-br";
-
-  var gameName = language === portuguese ? "Jogo da Velha" : "Tic Tac Toe";
-  var difficulty = language === portuguese ? "Escolha a Dificuldade" : "Choose the Difficulty";
-  var easyMode = language === portuguese ? "Muito Fácil" : "Piece of Cake";
-  var normalMode = "Normal";
-  var hardMode = language === portuguese ? "Invencível" : "Impossible";
-  var pieceType = language === portuguese ? "OK! Agora escolha a sua Peça" : "OK! Now choose your Piece";
-  var whoWillStart = language === portuguese ? "Ótimo! Quem irá começar?" : "Great! Who will Start?";
-  var computer = language === portuguese ? "Computador" : "Computer";
-  var iWillStart = language === portuguese ? "Eu começo!" : "I'll Start!";
-  var youWin = language === portuguese ? "Você Ganhou!" : "You Win!";
-  var youLose = language === portuguese ? "Você Perdeu!" : "You Lose!";
-  var draw = language === portuguese ? "Empatou!" : "Draw!";
-  var yourTurn = language === portuguese ? "Sua vez de jogar" : "It's your turn";
-  var computerTurn = language === portuguese ? "Computador vai jogar" : "Computer's turn";
-
-  return {
-    gameName: gameName,
-    difficulty: difficulty,
-    easy: easyMode,
-    normal: normalMode,
-    hard: hardMode,
-    pieceType: pieceType,
-    whoWillStart: whoWillStart,
-    computer: computer,
-    iWillStart: iWillStart,
-    youWin: youWin,
-    youLose: youLose,
-    draw: draw,
-    yourTurn: yourTurn,
-    computerTurn: computerTurn
-  };
-
-};
-
-var GameTitle = React.createClass({
-  render : function() {
-    return (<h1 className="text-primary">{this.props.labels.gameName}</h1>);
-  }
-});
-
 var GameLanguage = React.createClass({
 
   clickHandler : function(language) {
@@ -72,6 +29,12 @@ var GameLanguage = React.createClass({
     );
   }
 
+});
+
+var GameTitle = React.createClass({
+  render : function() {
+    return (<h1 className="game-title">{this.props.labels.gameName}</h1>);
+  }
 });
 
 var GameSettingsFirstStep = React.createClass({
@@ -165,16 +128,9 @@ var GameSettingsThirdStep = React.createClass({
       "whoStarts" : whoStarts
     };
 
-    $.ajax({
-      type: 'POST',
-      url: '/game/new',
-      dataType: 'json',
-      contentType: "application/json",
-      data: JSON.stringify(formdata),
-      beforeSend: function() {}
-    })
-     .done(function(data) { onSuccess(data, labels); })
-     .fail(onError);
+    postCall($)('/game/new', formdata)
+      .done(function(data) { onSuccess(data, labels); })
+      .fail(onError);
   },
 
   render : function() {
@@ -199,6 +155,22 @@ var GameSettingsThirdStep = React.createClass({
     );
   }
 
+});
+
+var RestartGameButton = React.createClass({
+
+  render : function() {
+    if (this.props.status === "active") return (<div></div>);
+    else return (
+      <div className="row">
+        <div className="col-xs-12 text-center">
+            <a type="button" className="btn btn-lg btn-block btn-default" href="/app/index.html">
+              {this.props.labels.playAgain}
+            </a>
+        </div>
+      </div>
+    );
+  }
 });
 
 var NewGame = React.createClass({
@@ -244,9 +216,9 @@ var NewGame = React.createClass({
   },
 
   clickHandler : function(row, col) {
-    if (!this.isPositionAvailable(row, col)) return false;
-    else if (this.props.gameData.status !== "active") return false;
-    else if (this.state.waitResult) return false;
+    if (!this.isPositionAvailable(row, col)) return;
+    else if (this.props.gameData.status !== "active") return;
+    else if (this.state.waitResult) return;
 
     this.setState({ status: this.statusHandler("computer-turn") });
 
@@ -286,18 +258,9 @@ var NewGame = React.createClass({
       }
     };
 
-    $.ajax({
-      type: 'POST',
-      url: '/game/move',
-      dataType: 'json',
-      contentType: "application/json",
-      data: JSON.stringify(formdata),
-      beforeSend: gameMustWaitAjaxResult
-    })
-     .done(onSuccess)
-     .fail(onError);
-
-    return false;
+    postCall($)('/game/move', formdata, gameMustWaitAjaxResult)
+      .done(onSuccess)
+      .fail(onError);
   },
 
   render : function() {
@@ -337,10 +300,11 @@ var NewGame = React.createClass({
         <div className="row">
           <div id="game-status" className="col-xs-8 col-xs-offset-2 col-md-4 col-md-offset-4">
             <div className="row row-title">
-              <div className="col-xs-12 text-center bg-info status-box">
-                <h3 className="text-info status">{this.state.status}</h3>
+              <div className="col-xs-12 text-center">
+                <h2 className="status">{this.state.status}</h2>
               </div>
             </div>
+            <RestartGameButton labels={this.props.labels} status={this.props.gameData.status} />
           </div>
         </div>
       </div>
@@ -348,6 +312,7 @@ var NewGame = React.createClass({
   }
 
 });
+
 
 $(function() {
   ReactDOM.render(

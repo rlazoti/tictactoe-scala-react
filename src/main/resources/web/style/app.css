@@ -81,9 +81,15 @@ table#board tr:nth-of-type(3) td {
   border: 2px ridge;
 }
 
+.game-title {
+  color: #d9534f;
+  text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
+}
 .status {
   margin-bottom: 10px;
   margin-top: 10px;
+  text-shadow: -1px -1px 1px #fff, 1px 1px 1px #000;
+  color: #337ab7;
 }
 
 .ribbon {
