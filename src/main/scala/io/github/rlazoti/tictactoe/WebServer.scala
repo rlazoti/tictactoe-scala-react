@@ -10,10 +10,17 @@ object WebServer extends App with AppContextProvider {
   private val api = new GameAPI()
   private val server = Http().bindAndHandle(api.routes, "0.0.0.0", 8080)
 
-  println(s"Server online at port 8080.\nPress RETURN to stop...")
-  StdIn.readLine()
-  server
-    .flatMap(_.unbind())
-    .onComplete(_ => actorSystem.terminate())
+  println(s"Server online at port 8080.\nPress 'exit' to stop...")
+
+  waitExitMessage()
+
+  private def waitExitMessage(): Unit = {
+    val exitMessage = StdIn.readLine()
+
+    exitMessage match {
+      case "exit" => server.flatMap(_.unbind()).onComplete(_ => actorSystem.terminate())
+      case _ => waitExitMessage()
+    }
+  }
 
 }
