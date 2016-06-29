@@ -1,4 +1,5 @@
 table#board {
+  font-family: fantasy;
   width: 100%;
   border-collapse: collapse;
   position: relative;
@@ -36,11 +37,11 @@ table#board td .piece {
 }
 
 table#board td .piece-free {
-  cursor: pointer;
   color: white;
 }
 
-table#board td .piece-free:hover {
+table#board td .piece-free-hover {
+  cursor: pointer;
   color: #1b809e;
 }
 

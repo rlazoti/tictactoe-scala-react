@@ -13,7 +13,7 @@ case class Easy(val name: String) extends Difficulty {
 }
 
 case class Normal(val name: String) extends Difficulty {
-  protected[this] val gameAI = new EasyGameAI()
+  protected[this] val gameAI = new NormalGameAI()
 }
 
 case class Hard(val name: String) extends Difficulty {

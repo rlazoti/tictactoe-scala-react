@@ -1,6 +1,7 @@
 package io.github.rlazoti.tictactoe.models
 
 sealed trait BoardState {
+
   def settings: GameSettings
   def player: Player
   def opponentPlayer: Player
@@ -66,6 +67,7 @@ sealed trait BoardState {
       .map { row => checkValues(somePlayer, row) }
       .count { result => result == true } > 0
   }
+
 }
 
 case class InitialBoardState(val settings: GameSettings, val player: Player, val opponentPlayer: Player)
@@ -75,13 +77,15 @@ case class InitialBoardState(val settings: GameSettings, val player: Player, val
 
   val lastMove = None
   val positions = Array.fill(settings.boardWidth, settings.boardWidth)(settings.emptyPositionValue)
+
 }
 
 case class CurrentBoardState(val settings: GameSettings, val player: Player, val opponentPlayer: Player,
-  val positions: Array[Array[String]]) extends BoardState {
+    val positions: Array[Array[String]]) extends BoardState {
 
   val lastMove = None
   validatePlayers()
+
 }
 
 case class NextBoardState(currentState: BoardState, opponentsMove: Move) extends BoardState {

@@ -14,7 +14,7 @@ object Mark {
     }
 }
 
-trait Mark {
+sealed trait Mark {
   def get: String
 }
 
@@ -26,7 +26,7 @@ case class MarkO() extends Mark {
   val get = "O"
 }
 
-trait Player {
+sealed trait Player {
   def name: String
   def getMark: String
 }

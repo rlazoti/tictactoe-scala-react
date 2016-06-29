@@ -2,11 +2,12 @@ package io.github.rlazoti.tictactoe.models
 
 import util.Random
 
-trait GameAI {
+sealed trait GameAI {
   def generateMove(board: Board): Option[Move]
 }
 
 case class EasyGameAI() extends GameAI {
+
   private val preferredMoves =
     Random.shuffle(List((1,1), (0,0), (0,2), (2,0), (2,2), (0,1), (1,0), (1,2), (2,1)))
 
@@ -19,6 +20,18 @@ case class EasyGameAI() extends GameAI {
         case Some((row, col)) => Some(Move(row, col))
         case _ => None
       }
+
+}
+
+case class NormalGameAI() extends GameAI {
+
+  private val easyAI = EasyGameAI()
+  private val hardAI = HardGameAI()
+
+  def generateMove(board: Board): Option[Move] =
+    if (board.availablePositions().size % 3 == 0) hardAI.generateMove(board)
+    else easyAI.generateMove(board)
+
 }
 
 case class HardGameAI() extends GameAI {

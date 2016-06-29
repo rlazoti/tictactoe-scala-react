@@ -27,4 +27,5 @@ class GameAPI(implicit val executionContext: ExecutionContext) extends DefaultJs
         complete(service.addPlayersMove(newMove).map { board => board.toData.toJson })
       }
     }
+
 }

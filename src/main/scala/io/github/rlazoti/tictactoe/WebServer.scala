@@ -8,7 +8,7 @@ import scala.io.StdIn
 object WebServer extends App with AppContextProvider {
 
   private val api = new GameAPI()
-  private val server = Http().bindAndHandle(api.routes, "127.0.0.1", 8080)
+  private val server = Http().bindAndHandle(api.routes, "10.0.0.10", 8080)
 
   println(s"Server online at port 8080.\nPress RETURN to stop...")
   StdIn.readLine()

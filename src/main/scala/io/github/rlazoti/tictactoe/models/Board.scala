@@ -1,6 +1,7 @@
 package io.github.rlazoti.tictactoe.models
 
 object Board {
+
   def buildGame(settings: GameSettings, user: Player, computer: Player, positions: Array[Array[String]]): Board =
     Board(settings, user, CurrentBoardState(settings, computer, user, positions))
 
@@ -9,12 +10,13 @@ object Board {
       case "user" | "User" => Board(settings, user, InitialBoardState(settings, computer, user))
       case _ => Board(settings, user, InitialBoardState(settings, user, computer)).generateOpponentMove()
     }
+
 }
 
 case class Move(val row: Int, val col: Int)
 
 case class BoardData(val level: String, val userMark: String, val computerMark: String,
-  val positions: Array[Array[String]], val status: String)
+    val positions: Array[Array[String]], val status: String)
 
 case class GameMove(val row: Int, val col: Int, val board: BoardData)
 
