@@ -8,9 +8,15 @@ import scala.io.StdIn
 object WebServer extends App with AppContextProvider {
 
   private val api = new GameAPI()
-  private val server = Http().bindAndHandle(api.routes, "0.0.0.0", 8080)
+  private val port = sys.env
+    .get("http.port")
+    .orElse(Some("8080"))
+    .map(p => p.toInt)
+    .get
 
-  println(s"Server online at port 8080.\nPress 'exit' to stop...")
+  private val server = Http().bindAndHandle(api.routes, "0.0.0.0", port)
+
+  println(s"Server online at port $port.\nPress 'exit' to stop...")
 
   waitExitMessage()
 
