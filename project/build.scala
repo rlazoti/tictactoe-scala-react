@@ -1,3 +1,4 @@
+import com.typesafe.sbt.packager.archetypes.JavaAppPackaging
 import sbt._
 import sbt.Keys._
 import scoverage.ScoverageKeys._
@@ -26,5 +27,5 @@ object AppBuilder extends Build {
   lazy val app = Project(appName, file("."))
     .settings(appSettings : _*)
     .settings(libraryDependencies ++= appDependencies)
-
+    .enablePlugins(JavaAppPackaging)
 }
