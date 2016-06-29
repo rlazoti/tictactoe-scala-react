@@ -64,7 +64,7 @@ var GameLanguage = React.createClass({
           <button type="button" className="btn btn-lg btn-default btn-block" onClick={this.clickHandler.bind(this, "pt-br")}>
             Português
           </button>
-          <button type="button" className="btn btn-lg btn-warning btn-block" onClick={this.clickHandler.bind(this, "en")}>
+          <button type="button" className="btn btn-lg btn-default btn-block" onClick={this.clickHandler.bind(this, "en")}>
             English
           </button>
         </div>
@@ -129,10 +129,10 @@ var GameSettingsSecondStep = React.createClass({
         </div>
         <div className="row">
           <div className="col-xs-8 col-xs-offset-2 col-md-4 col-md-offset-4 text-center">
-            <button type="button" className="btn btn-lg btn-block btn-success" onClick={this.clickHandler.bind(this, "O")}>
+            <button type="button" className="btn btn-lg btn-block btn-default" onClick={this.clickHandler.bind(this, "O")}>
               &nbsp;&nbsp;O&nbsp;&nbsp;
             </button>
-            <button type="button" className="btn btn-lg btn-block btn-primary" onClick={this.clickHandler.bind(this, "X")}>
+            <button type="button" className="btn btn-lg btn-block btn-default" onClick={this.clickHandler.bind(this, "X")}>
               &nbsp;&nbsp;X&nbsp;&nbsp;
             </button>
           </div>
@@ -187,10 +187,10 @@ var GameSettingsThirdStep = React.createClass({
         </div>
         <div className="row">
           <div className="col-xs-8 col-xs-offset-2 col-md-4 col-md-offset-4 text-center">
-            <button type="button" className="btn btn-lg btn-block btn-success" onClick={this.clickHandler.bind(this, "Computer")}>
+            <button type="button" className="btn btn-lg btn-block btn-default" onClick={this.clickHandler.bind(this, "Computer")}>
               {this.props.labels.computer}
             </button>
-            <button type="button" className="btn btn-lg btn-block btn-primary" onClick={this.clickHandler.bind(this, "User")}>
+            <button type="button" className="btn btn-lg btn-block btn-default" onClick={this.clickHandler.bind(this, "User")}>
               {this.props.labels.iWillStart}
             </button>
           </div>
@@ -337,8 +337,8 @@ var NewGame = React.createClass({
         <div className="row">
           <div id="game-status" className="col-xs-8 col-xs-offset-2 col-md-4 col-md-offset-4">
             <div className="row row-title">
-              <div className="col-xs-12 text-center bg-warning">
-                <h2 className="text-warning">{this.state.status}</h2>
+              <div className="col-xs-12 text-center bg-info status-box">
+                <h3 className="text-info status">{this.state.status}</h3>
               </div>
             </div>
           </div>
