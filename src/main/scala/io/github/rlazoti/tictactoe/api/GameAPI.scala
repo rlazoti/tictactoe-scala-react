@@ -1,5 +1,6 @@
 package io.github.rlazoti.tictactoe.api
 
+import akka.http.scaladsl.model.StatusCodes.PermanentRedirect
 import io.github.rlazoti.tictactoe.models.{ BoardData, GameMove, NewGame }
 import io.github.rlazoti.tictactoe.services.GameService
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
@@ -16,6 +17,9 @@ class GameAPI(implicit val executionContext: ExecutionContext) extends DefaultJs
   private val service = new GameService()
 
   val routes =
+    pathSingleSlash {
+      redirect("app/index.html", PermanentRedirect)
+    } ~
     pathPrefix("app") {
       getFromResourceDirectory("web")
     } ~
