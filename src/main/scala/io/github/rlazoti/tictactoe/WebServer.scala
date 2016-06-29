@@ -9,7 +9,7 @@ object WebServer extends App with AppContextProvider {
 
   private val api = new GameAPI()
   private val port = sys.env
-    .get("$PORT")
+    .get("PORT")
     .orElse(Some("8080"))
     .map(p => p.toInt)
     .get
