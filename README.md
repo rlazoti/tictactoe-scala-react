@@ -44,7 +44,6 @@ $ sbt test
 ```
 
 
-Author
-======
+### Author
 
 Rodrigo Lazoti - rodrigolazoti@gmail.com
