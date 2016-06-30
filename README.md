@@ -1,3 +1,16 @@
+[![][travis img]][travis]
+[![][coverage img]][coverage]
+[![][license img]][license]
+
+[travis]:https://travis-ci.org/rlazoti/tictactoe-scala-react
+[travis img]:https://travis-ci.org/rlazoti/tictactoe-scala-react.svg?branch=master
+
+[coverage]:https://coveralls.io/github/rlazoti/tictactoe-scala-react?branch=master
+[coverage img]:https://coveralls.io/repos/github/rlazoti/tictactoe-scala-react/badge.svg?branch=master
+
+[license]:LICENSE
+[license img]:https://img.shields.io/hexpm/l/plug.svg?maxAge=2592000
+
 A Tic Tac Toe game in Scala and React
 ========================================
 
