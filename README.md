@@ -43,10 +43,6 @@ You can play it online at http://tictactoe-scala-react.herokuapp.com/
 $ sbt test
 ```
 
-### How It Looks Like
-
-![how it looks like](https://raw.githubusercontent.com/rlazoti/tictactoe-scala-react/master/tictactoe.gif)
-
 
 Author
 ======
