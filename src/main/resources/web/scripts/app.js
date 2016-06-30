@@ -159,14 +159,21 @@ var GameSettingsWhoWillStart = React.createClass({
 
 var RestartGameButton = React.createClass({
 
+  clickHandler : function() {
+    ReactDOM.render(
+      <GameLanguage />,
+      document.getElementById("game-container")
+    );
+  },
+
   render : function() {
     if (this.props.status === "active") return (<div></div>);
     else return (
       <div className="row">
         <div className="col-xs-12 text-center">
-            <a type="button" className="btn btn-lg btn-block btn-default" href="/app/index.html">
-              {this.props.labels.playAgain}
-            </a>
+          <button type="button" className="btn btn-lg btn-block btn-default" onClick={this.clickHandler}>
+            {this.props.labels.playAgain}
+          </button>
         </div>
       </div>
     );
