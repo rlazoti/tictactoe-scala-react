@@ -13,11 +13,22 @@ $ cd tictactoe-scala-react
 $ sbt run
 ```
 
+### Try It
+
+You can try it online at http://tictactoe-scala-react.herokuapp.com/
+
+
 ### Test
 
 ```sh
 $ sbt test
 ```
+
+
+### How It Looks Like (Animated Gif)
+
+![how it looks like](https://raw.githubusercontent.com/rlazoti/tictactoe-scala-react/master/tictactoe.gif)
+
 
 Author
 ======
