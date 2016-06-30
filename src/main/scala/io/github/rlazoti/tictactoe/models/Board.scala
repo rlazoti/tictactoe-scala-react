@@ -46,11 +46,9 @@ case class Board(
 
   private def generateOpponentMove() =
     if (isEnded()) this
-    else {
-      settings.level.generateMove(this) match {
-        case Some(move) => Board(settings, userPlayer, NextBoardState(currentState, move))
-        case None => this
-      }
+    else settings.level.generateMove(this) match {
+      case Some(move) => Board(settings, userPlayer, NextBoardState(currentState, move))
+      case None => this
     }
 
   private[models] def currentStatus() =

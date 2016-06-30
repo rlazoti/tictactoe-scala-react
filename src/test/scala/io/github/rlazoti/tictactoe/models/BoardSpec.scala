@@ -58,11 +58,76 @@ class BoardSpec extends FunSuite with Matchers {
   }
 
   test("When computer is who will start, the new board should contain only a computer's move") {
-    val boardData = Board.newGame(settingsEasyMode, user, opponent, "computer").toData
+    val boardData = Board.newGame(settingsNormalMode, user, opponent, "computer").toData
 
     boardData.positions.flatten.count(piece => opponent.getPiece.equals(piece)) shouldBe 1
     boardData.positions.flatten.count(piece => user.getPiece.equals(piece)) shouldBe 0
     boardData.positions.flatten.count(piece => settingsHardMode.emptyPositionValue.equals(piece)) shouldBe 8
+  }
+
+  test("Board's ended game should not accept new moves") {
+    val positions = Array( Array("X", "-", "X"), Array("O", "-", "0"), Array("-", "O", "-"))
+    val board = Board.buildGame(settingsHardMode, user, opponent, positions).addMove(Move(0,1))
+    val newBoard = board.addMove(Move(2,2))
+
+    board.currentStatus() shouldBe "user-won"
+    board shouldBe newBoard
+  }
+
+  test("Board's game should expose its status when the game is not over yet") {
+    val positions = Array( Array("X", "-", "X"), Array("O", "-", "O"), Array("X", "O", "-"))
+    val board = Board.buildGame(settingsEasyMode, user, opponent, positions)
+
+    board.isEnded() shouldBe false
+    board.currentStatus() shouldBe "active"
+  }
+
+  test("Board's ended game should expose its status when the user win the game") {
+    val positions = Array( Array("X", "-", "X"), Array("O", "-", "O"), Array("-", "O", "-"))
+    val board = Board.buildGame(settingsNormalMode, user, opponent, positions).addMove(Move(0,1))
+
+    board.userWon() shouldBe true
+    board.currentStatus() shouldBe "user-won"
+  }
+
+  test("Board's ended game should expose its status when the computer win the game") {
+    val positions = Array( Array("X", "-", "X"), Array("O", "O", "O"), Array("X", "O", "-"))
+    val board = Board.buildGame(settingsHardMode, user, opponent, positions)
+
+    board.computerWon() shouldBe true
+    board.currentStatus() shouldBe "computer-won"
+  }
+
+  test("Board's draw game should expose its status") {
+    val positions = Array( Array("X", "O", "X"), Array("O", "X", "O"), Array("O", "X", "O"))
+    val board = Board.buildGame(settingsEasyMode, user, opponent, positions)
+
+    board.isEnded() shouldBe true
+    board.currentStatus() shouldBe "draw"
+  }
+
+  test("Board's game should expose its available positions properly") {
+    val positions = Array( Array("X", "-", "X"), Array("O", "-", "O"), Array("X", "O", "-"))
+    val board = Board.buildGame(settingsNormalMode, user, opponent, positions)
+    val expectedPositions = Seq(Move(0,1), Move(1,1), Move(2,2))
+
+    board.availablePositions() shouldBe expectedPositions
+  }
+
+  test("Board's game should indentify its user's player properly") {
+    val positions = Array( Array("X", "-", "X"), Array("O", "-", "O"), Array("X", "O", "-"))
+    val board = Board.buildGame(settingsHardMode, user, opponent, positions)
+
+    board.userPlayer shouldBe user
+    board.computerPlayer shouldBe opponent
+  }
+
+  test("Board's game should indentify its computer's player properly") {
+    val initialBoardState = InitialBoardState(GameSettings(Easy("easy")), opponent, user)
+    val board = Board(GameSettings(Easy("easy")), user, initialBoardState)
+
+    board.userPlayer shouldBe user
+    board.computerPlayer shouldBe opponent
   }
 
 }

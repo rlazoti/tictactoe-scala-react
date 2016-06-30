@@ -38,6 +38,14 @@ class BoardStateSpec extends FunSuite with Matchers {
     InitialBoardState(settings, User(Nought()), Computer(Nought()))
   }
 
+  test("Board's current state should not accept that user and opponent use the same piece") {
+    an [IllegalArgumentException] should be thrownBy
+      CurrentBoardState(settings, User(Cross()), Computer(Cross()), initialBoardState.positions)
+
+    an [IllegalArgumentException] should be thrownBy
+      CurrentBoardState(settings, User(Nought()), Computer(Nought()), initialBoardState.positions)
+  }
+
   test("An opponent's move should be registered into a new Board's state") {
     val state = NextBoardState(initialBoardState, Move(0, 1))
     val expectedRow = Array(settings.emptyPositionValue, opponent.getPiece, settings.emptyPositionValue)
@@ -63,6 +71,11 @@ class BoardStateSpec extends FunSuite with Matchers {
     thirdMoveState.positions(0) should contain theSameElementsInOrderAs expectedFirstRow
     thirdMoveState.positions(1) should contain theSameElementsInOrderAs expectedSecondRow
     thirdMoveState.positions(2) should contain theSameElementsInOrderAs expectedThirdRow
+  }
+
+  test("It's not valid to put a piece in an already used position") {
+    an [UnsupportedOperationException] should be thrownBy
+      NextBoardState(NextBoardState(initialBoardState, Move(1, 1)), Move(1, 1))
   }
 
   test("A draw game state should have all positions defined") {
